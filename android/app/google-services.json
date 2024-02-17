@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "449686849785",
+    "project_id": "tabletap-45899",
+    "storage_bucket": "tabletap-45899.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449686849785:android:2a878bdd533682a6b2fa28",
+        "android_client_info": {
+          "package_name": "com.example.table_tap_customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCElBE4fNbjUCilQ7zyurFycEzj2tlBHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
