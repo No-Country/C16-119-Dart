@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:log_print/log_print.dart';
 import 'package:log_print/log_print_config.dart';
+import 'package:table_tap_customer/features/products/products.dart';
+
+
 import 'firebase_options.dart';
 
 void main() async {
@@ -23,9 +26,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
     debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Center(
-          child: Text('Table tap customer '),
-        ),
+        body: ProductScreen()
       ),
     );
   }
