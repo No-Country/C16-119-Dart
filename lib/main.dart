@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Text('Table tap customer'),
+          child: Text('Table tap customer '),
         ),
       ),
     );
