@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_tap_customer/config/config.dart';
+import 'package:table_tap_customer/features/products/domain/domain.dart';
+import 'package:table_tap_customer/features/products/presentation/providers/product_provider.dart';
 
-class ProductScreen extends StatelessWidget {
+class ProductScreen extends ConsumerWidget {
   const ProductScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
+    ThemeColors palette = ThemeColors.palette();
     return Scaffold(
       // appBar: AppBar(
       //   title: const Text('Editar Producto'),
@@ -24,7 +29,25 @@ class ProductScreen extends StatelessWidget {
       // ),
       body: const _ProductView(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: palette.main,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () {
+          setProduct(Product(
+              id: "asd",
+              name: "chocolate",
+              price: 12,
+              time: 12,
+              category: "pasd",
+              photos: [
+                "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
+              ],
+              description: "holi",
+              ingredients: [
+                "milk",
+                "milk",
+                "milk",
+              ],
+              available: true));
           // if (productState.product == null) return;
 
           // ref
@@ -35,40 +58,47 @@ class ProductScreen extends StatelessWidget {
           //   showSnackbar(context);
           // });
         },
-        child: const Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: palette.light,
+        ),
       ),
     );
   }
 }
 
-class _ProductView extends StatelessWidget {
+class _ProductView extends ConsumerWidget {
   const _ProductView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Stack(
+  Widget build(BuildContext context, WidgetRef ref) {
+    Product product = ref.watch(productSelectedProvider);
+    return Stack(
       children: [
         SizedBox(
           height: 300,
           width: 600,
-          child: _ImageGallery(images: [
-            "https://i.ibb.co/m6PqGyG/Food-Picture.png",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU",
-            "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-          ]),
+          child: _ImageGallery(images: product.photos
+              // [
+              //   "https://i.ibb.co/m6PqGyG/Food-Picture.png",
+              //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU",
+              //   "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
+              // ]
+              ),
         ),
         // SizedBox(height: 100),
-        _ProductDetail(),
+        const _ProductDetail(),
       ],
     );
   }
 }
 
-class _ProductDetail extends StatelessWidget {
-  const _ProductDetail({super.key});
-
+class _ProductDetail extends ConsumerWidget {
+  const _ProductDetail();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ThemeColors palette = ThemeColors.palette();
+    Product product = ref.watch(productSelectedProvider);
     return DraggableScrollableSheet(
       initialChildSize: 0.65,
       minChildSize: 0.65,
@@ -97,15 +127,20 @@ class _ProductDetail extends StatelessWidget {
                 ListView(
                   controller: scrollController,
                   children: [
-                    const ListTile(
+                    ListTile(
                       title: Text(
-                        "Cacao Maca Walnut Milk",
+                        product.name,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: palette.primaryTitle),
                       ),
                       subtitle: Text(
-                        "Food - 60 mins",
-                        style: TextStyle(fontSize: 16),
+                        "Food - ${product.time} mins",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: palette.secondaryText),
                       ),
                     ),
                     ListTile(
@@ -127,33 +162,35 @@ class _ProductDetail extends StatelessWidget {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Restaurant name",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                      fontSize: 16,
+                                      color: palette.primaryTitle),
                                 ),
                               ],
                             ),
                             Row(children: [
                               CircleAvatar(
                                 radius: 25,
-                                backgroundColor: const Color(0xff1FCC79),
+                                backgroundColor: palette.main,
                                 child: IconButton(
                                     iconSize: 20,
                                     onPressed: () {},
                                     icon: const Icon(Icons.favorite,
                                         color: Color(0xffE3FFF8))),
                               ),
-                              const Text(
+                              Text(
                                 "60 likes",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: palette.primaryTitle),
                               ),
                             ])
                           ],
                         ),
-                        // const ImageIcon(NetworkImage(
                       ),
                     ),
                     const ListTile(
@@ -161,15 +198,23 @@ class _ProductDetail extends StatelessWidget {
                       dense: true,
                       title: Divider(),
                     ),
-                    const ListTile(
-                      title: Text(
-                        "Description",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                    ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          "Description",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: palette.primaryTitle),
+                        ),
                       ),
                       subtitle: Text(
-                        "Your recipe has been uploaded, you can see it on your profile. Your recipe has been uploaded, you can see it on your",
-                        style: TextStyle(fontSize: 16),
+                        product.description,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: palette.secondaryText),
                       ),
                     ),
                     const ListTile(
@@ -177,183 +222,33 @@ class _ProductDetail extends StatelessWidget {
                       dense: true,
                       title: Divider(),
                     ),
-                    const ListTile(
+                    ListTile(
+                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                       title: Text(
                         "Ingredients",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: palette.primaryTitle),
                       ),
                     ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                    for (final ingredient in product.ingredients)
+                      ListTile(
+                        visualDensity:
+                            const VisualDensity(horizontal: 0, vertical: -4),
+                        leading: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: palette.light,
+                            child: Icon(Icons.check, color: palette.main)),
+                        subtitle: Text(
+                          ingredient,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: palette.primaryText),
+                        ),
                       ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      dense: true,
-                      leading: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Color(0xffE3FFF8),
-                          child: Icon(Icons.check, color: Color(0xff1FCC79))),
-                      subtitle: Text(
-                        "4 Eggs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ),
-                    SizedBox(
+                    const SizedBox(
                       height: 80,
                     )
                   ],
@@ -375,7 +270,6 @@ class _ImageGallery extends StatelessWidget {
   Widget build(BuildContext context) {
     if (images.isEmpty) {
       return ClipRRect(
-          // borderRadius: const BorderRadius.all(Radius.circular(20)),
           child: Image.asset('assets/images/no_image.jpg', fit: BoxFit.cover));
     }
 
@@ -391,7 +285,6 @@ class _ImageGallery extends StatelessWidget {
         }
 
         return ClipRRect(
-            // borderRadius: const BorderRadius.all(Radius.circular(20)),
             child: FadeInImage(
           fit: BoxFit.cover,
           image: imageProvider,
