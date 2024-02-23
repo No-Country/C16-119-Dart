@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 
 const colorSeed = Color(0xff1FCC79);
-const scaffoldBackgroundColor = Color(0xFFFEFEFF);
-//  Map<String, Color> palette() => {
-//       "main": const Color(0xff1FCC79),
-//       "warning": const Color(0xffFF6464),
-//       "primaryText": const Color(0xff2E3E5C),
-//       "secondaryText": const Color(0xff9FA5C0),
-//       "border": const Color(0xffD0DBEA),
-//     };
+const scaffoldBackgroundColor = Color(0xFFFFFEFF);
 
 class AppTheme {
   final bool isDarkmode;
 
   AppTheme({required this.isDarkmode});
   ThemeData getTheme() {
+    ThemeColors palette = ThemeColors.palette();
     return ThemeData(
 
         ///* General
@@ -49,6 +43,10 @@ class AppTheme {
           color: scaffoldBackgroundColor,
           // titleTextStyle: GoogleFonts.montserratAlternates()
           //   .copyWith( fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: palette.main,
+          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ));
   }
 }
@@ -62,37 +60,43 @@ class ThemeColors {
   final Color primaryText;
   final Color secondaryText;
   final Color border;
+  final Color bg;
+  final Color form;
   ThemeColors({
     this.main = const Color(0xff1FCC79),
-    this.light = const Color(0xffbaf8d9),
+    this.light = const Color(0xffdbfdec),
     this.dark = const Color(0xff13824d),
     this.warning = const Color(0xffFF6464),
     this.primaryTitle = const Color(0xff3E5481),
     this.primaryText = const Color(0xff2E3E5C),
     this.secondaryText = const Color(0xff9FA5C0),
     this.border = const Color(0xffD0DBEA),
+    this.bg = const Color(0xffffffff),
+    this.form = const Color(0xffF4F5F7),
   });
 
   static ThemeColors palette() => ThemeColors();
 }
 
-// class ThemeTextStyle {
-//   final TextStyle h1;
-//   final TextStyle h2;
-//   final TextStyle h3;
-//   final TextStyle p1;
-//   final TextStyle p2;
-//   final palette = ThemeColors.palette();
-//    ThemeTextStyle(
-//       {this.h1 =  TextStyle(
-//           fontWeight: FontWeight.w800,
-//           fontSize: 16,
-//           color: palette.primaryText),
-//       this.h2,
-//       this.h3,
-//       this.p1,
-//       this.p2
-//       });
-
-//   static ThemeColors text() => ThemeColors();
-// }
+class ThemeTextStyle {
+  final TextStyle h1 = TextStyle(
+      fontWeight: FontWeight.w800,
+      fontSize: 22,
+      color: ThemeColors.palette().primaryText);
+  final TextStyle h2 = TextStyle(
+      fontWeight: FontWeight.w800,
+      fontSize: 17,
+      color: ThemeColors.palette().primaryText);
+  final TextStyle h3 = TextStyle(
+      fontWeight: FontWeight.w800,
+      fontSize: 16,
+      color: ThemeColors.palette().primaryText);
+  final TextStyle p1 = TextStyle(
+      fontWeight: FontWeight.w500,
+      fontSize: 17,
+      color: ThemeColors.palette().secondaryText);
+  final TextStyle p2 = TextStyle(
+      fontWeight: FontWeight.w500,
+      fontSize: 15,
+      color: ThemeColors.palette().secondaryText);
+}
