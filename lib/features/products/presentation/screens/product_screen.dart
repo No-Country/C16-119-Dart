@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_tap_customer/config/config.dart';
+import 'package:table_tap_customer/features/dish/domain/domain.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
-import 'package:table_tap_customer/features/products/presentation/providers/product_provider.dart';
+import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
 
 class ProductScreen extends ConsumerWidget {
   const ProductScreen({super.key});
@@ -10,44 +12,48 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
+    final setProductLikes =
+        ref.read(productSelectedProvider.notifier).setProductLikes;
     ThemeColors palette = ThemeColors.palette();
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 2),
+      backgroundColor: palette.main,
+      content: const Text('Producto agregado'),
+    );
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Editar Producto'),
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () async {
-      //           // final photoPath = await CameraGalleryServiceImpl().takePhoto();
-      //           // if (photoPath == null) return;
-
-      //           // ref
-      //           //     .read(productFormProvider(productState.product!).notifier)
-      //           //     .updateProductImage(photoPath);
-      //         },
-      //         icon: const Icon(Icons.camera_alt_outlined))
-      //   ],
-      // ),
       body: const _ProductView(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: palette.main,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         onPressed: () {
-          setProduct(Product(
-              id: "asd",
-              name: "chocolate",
-              price: 12,
-              time: 12,
-              category: "pasd",
-              photos: [
-                "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-              ],
-              description: "holi",
-              ingredients: [
-                "milk",
-                "milk",
-                "milk",
-              ],
-              available: true));
+          ScaffoldMessenger.of(context).clearSnackBars();
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          // Future.delayed(
+          //     const Duration(milliseconds: 500), () => context.pop());
+          setProductLikes(100);
+          // setProduct(Product(
+          //     idProduct: "asd",
+          //     // name: "chocolate",
+          //     // price: 12,
+          //     time: 12,
+          //     likes: 12,
+          //     category: "pasd",
+          //     // photos: [
+          //     //   "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
+          //     // ],
+          //     description: "holi",
+          //     dish: Dish(
+          //       idDish: "234",
+          //       name: "chocolate",
+          //       photos: [
+          //         "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
+          //       ],
+          //       price: 2000,
+          //       ingredients: [
+          //         "milk",
+          //         "milk",
+          //         "milk",
+          //       ],
+          //     ),
+          //     available: true));
           // if (productState.product == null) return;
 
           // ref
@@ -61,6 +67,7 @@ class ProductScreen extends ConsumerWidget {
         child: Icon(
           Icons.add,
           color: palette.light,
+          size: 30,
         ),
       ),
     );
@@ -72,13 +79,14 @@ class _ProductView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ThemeColors palette = ThemeColors.palette();
     Product product = ref.watch(productSelectedProvider);
     return Stack(
       children: [
         SizedBox(
-          height: 300,
+          height: 350,
           width: 600,
-          child: _ImageGallery(images: product.photos
+          child: _ImageGallery(images: product.dish.photos
               // [
               //   "https://i.ibb.co/m6PqGyG/Food-Picture.png",
               //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU",
@@ -86,7 +94,20 @@ class _ProductView extends ConsumerWidget {
               // ]
               ),
         ),
-        // SizedBox(height: 100),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 40,
+            left: 20,
+          ),
+          child: FloatingActionButton(
+              heroTag: "btn1",
+              backgroundColor: palette.light.withOpacity(0.2),
+              onPressed: () => context.pop("/"),
+              child: Icon(
+                Icons.arrow_back_ios_new,
+                color: palette.light,
+              )),
+        ),
         const _ProductDetail(),
       ],
     );
@@ -100,8 +121,8 @@ class _ProductDetail extends ConsumerWidget {
     ThemeColors palette = ThemeColors.palette();
     Product product = ref.watch(productSelectedProvider);
     return DraggableScrollableSheet(
-      initialChildSize: 0.65,
-      minChildSize: 0.65,
+      initialChildSize: 0.6,
+      minChildSize: 0.6,
       maxChildSize: 0.9,
       builder: (context, scrollController) {
         return Container(
@@ -117,10 +138,10 @@ class _ProductDetail extends ConsumerWidget {
                     Container(
                       margin: const EdgeInsets.only(top: 10, bottom: 10),
                       height: 5,
-                      width: 50,
+                      width: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey),
+                          color: palette.secondaryText.withOpacity(0.5)),
                     ),
                   ],
                 ),
@@ -129,7 +150,7 @@ class _ProductDetail extends ConsumerWidget {
                   children: [
                     ListTile(
                       title: Text(
-                        product.name,
+                        product.dish.name,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -182,7 +203,7 @@ class _ProductDetail extends ConsumerWidget {
                                         color: Color(0xffE3FFF8))),
                               ),
                               Text(
-                                "60 likes",
+                                "${product.likes} likes",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -223,7 +244,8 @@ class _ProductDetail extends ConsumerWidget {
                       title: Divider(),
                     ),
                     ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
                       title: Text(
                         "Ingredients",
                         style: TextStyle(
@@ -232,24 +254,25 @@ class _ProductDetail extends ConsumerWidget {
                             color: palette.primaryTitle),
                       ),
                     ),
-                    for (final ingredient in product.ingredients)
-                      ListTile(
-                        visualDensity:
-                            const VisualDensity(horizontal: 0, vertical: -4),
-                        leading: CircleAvatar(
-                            radius: 15,
-                            backgroundColor: palette.light,
-                            child: Icon(Icons.check, color: palette.main)),
-                        subtitle: Text(
-                          ingredient,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: palette.primaryText),
+                    if (product.dish.ingredients != null)
+                      for (final ingredient in product.dish.ingredients!)
+                        ListTile(
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -4),
+                          leading: CircleAvatar(
+                              radius: 15,
+                              backgroundColor: palette.light,
+                              child: Icon(Icons.check, color: palette.main)),
+                          subtitle: Text(
+                            ingredient,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: palette.primaryText),
+                          ),
                         ),
-                      ),
                     const SizedBox(
-                      height: 80,
+                      height: 60,
                     )
                   ],
                 ),
@@ -283,6 +306,7 @@ class _ImageGallery extends StatelessWidget {
         } else {
           // imageProvider = FileImage(File(image));
         }
+        // return Text("siy img");
 
         return ClipRRect(
             child: FadeInImage(
