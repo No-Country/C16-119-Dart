@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:log_print/log_print.dart';
 import 'package:log_print/log_print_config.dart';
-import 'package:table_tap_admin/config/config.dart';
-
+import 'package:table_tap_admin/config/router.dart';
+import 'package:table_tap_admin/config/theme.dart';
 
 import 'firebase_options.dart';
 
@@ -15,17 +16,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MainApp());
+  runApp(ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({super.key});
+  final thema = AppTheme().getTheme();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: goRouterProvider,
-      theme: AppTheme().getTheme(),
+      theme: thema,
       debugShowCheckedModeBanner: false,
     );
   }

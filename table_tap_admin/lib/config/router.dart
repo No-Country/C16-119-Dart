@@ -1,39 +1,43 @@
 import 'package:go_router/go_router.dart';
-import 'package:table_tap_admin/features/products/products.dart';
-// List routes = ["/product"];
-// Map<String, String> routes2 = {"product" : "/product"};
-// enum Routes {as}
+import 'package:table_tap_admin/config/constants/routes_constant.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/login/login_screen.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/password/change_screen.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/password/recovery_screen.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/password/verify_code_screen.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/register/register_screen.dart';
+import 'package:table_tap_admin/features/auth/presentation/screen/splash/splash_screen.dart';
+import 'package:table_tap_admin/features/home/presentation/screen/home_screen.dart';
+
 final goRouterProvider = GoRouter(
-  initialLocation: '/product',
-  // refreshListenable: goRouterNotifier,
+  initialLocation: RoutesConstants.splash,
   routes: [
-    ///* Primera pantalla
-    // GoRoute(
-    //   path: '/splash',
-    //   builder: (context, state) => const CheckAuthStatusScreen(),
-    // ),
-
-    ///* Auth Routes
-    // GoRoute(
-    //   path: '/login',
-    //   builder: (context, state) => const LoginScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/register',
-    //   builder: (context, state) => const RegisterScreen(),
-    // ),
-
-    // ///* Product Routes
     GoRoute(
-      path: '/',
-      builder: (context, state) => const ProductsScreen(),
+      path: RoutesConstants.splash,
+      builder: (context, state) => const SplashScreen(),
     ),
     GoRoute(
-      path: "/product", // /product/new
-      // path: '/product/:id', // /product/new
-      builder: (context, state) => ProductScreen(
-          // productId: state.params['id'] ?? 'no-id',
-          ),
+      path: RoutesConstants.login,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.register,
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.passwordCodeSendEmail,
+      builder: (context, state) => const RecoveryScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.passwordVerifyCode,
+      builder: (context, state) => const VerifyCodeScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.passwordChange,
+      builder: (context, state) => const ChangeScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.home,
+      builder: (context, state) => const HomeScreen(),
     ),
   ],
 );
