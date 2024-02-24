@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:table_tap_customer/features/dishes/domain/dish_entity.dart';
+import 'package:table_tap_customer/features/dishes/domain/entities/dish_entity.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 
 class Orders {
@@ -18,7 +18,6 @@ class Orders {
 
   List<Order> ordersToEntity(String data) {
     Map<dynamic, dynamic> res = jsonDecode(data);
-    print(res);
     return res["orders"].map((Map<String, dynamic> itemOrder) => Order(
         idOrder: itemOrder["idOrder"],
         nameCustomer: itemOrder["nameCustomer"],

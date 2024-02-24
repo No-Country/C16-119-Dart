@@ -11,7 +11,7 @@ class LocalStorageRepositoryImpl extends LocalStorageRepository {
   }
 
   @override
-  Future<void> saveOrders(List<Order> newOrders) {
-    return datasource.saveOrders(newOrders);
+  Future<void> saveOrders(List<Order> purchasedOrders) {
+    return datasource.saveOrders(purchasedOrders);
   }
 }

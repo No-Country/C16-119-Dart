@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_customer/config/config.dart';
-import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
 
