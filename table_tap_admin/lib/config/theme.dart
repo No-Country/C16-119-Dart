@@ -1,45 +1,55 @@
 import 'package:flutter/material.dart';
 
-const colorSeed = Color(0xff1FCC79);
-const scaffoldBackgroundColor = Color(0xFFFEFEFF);
+// refreshListenable: goRouterNotifier,
+const colorPrimary = Color.fromARGB(0xFF, 0x3E, 0x54, 0x81);
+const colorSecondary = Color(0xff1FCC79);
+const colorTerciario = Color.fromARGB(0xFF, 0x9F, 0xA5, 0xC0);
+const colorPrincipal = Colors.white;
 
 class AppTheme {
-
   ThemeData getTheme() => ThemeData(
-    ///* General
-    useMaterial3: true,
-    colorSchemeSeed: colorSeed,
+        ///* General
+        useMaterial3: true,
+        colorSchemeSeed: colorSecondary,
+        iconTheme: const IconThemeData(color: colorPrimary),
 
-    ///* Texts
-    textTheme: TextTheme(
-      // titleLarge: GoogleFonts.montserratAlternates()
-      //   .copyWith( fontSize: 40, fontWeight: FontWeight.bold ),
-      // titleMedium: GoogleFonts.montserratAlternates()
-      //   .copyWith( fontSize: 30, fontWeight: FontWeight.bold ),
-      // titleSmall: GoogleFonts.montserratAlternates()
-      //   .copyWith( fontSize: 20 )
-    ),
+        ///* Buttons
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(colorSecondary),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(colorSecondary),
+          ),
+        ),
 
-    ///* Scaffold Background Color
-    scaffoldBackgroundColor: scaffoldBackgroundColor,
-    
+        ///* Texts
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(
+              fontSize: 30, fontWeight: FontWeight.bold, color: colorPrimary),
+          bodyMedium: TextStyle(
+            fontSize: 18,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 16,
+            color: colorTerciario,
+          ),
+          labelSmall: TextStyle(fontSize: 18, color: colorPrincipal),
+        ),
 
-    ///* Buttons
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-        // textStyle: MaterialStatePropertyAll(
-        //   GoogleFonts.montserratAlternates()
-        //     .copyWith(fontWeight: FontWeight.w700)
-        //   )
-      )
-    ),
+        ///* Scaffold Background Color
+        scaffoldBackgroundColor: colorPrincipal,
 
-    ///* AppBar
-    appBarTheme: AppBarTheme(
-      color: scaffoldBackgroundColor,
-      // titleTextStyle: GoogleFonts.montserratAlternates()
-      //   .copyWith( fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black ),
-    )
-  );
-
+        ///* AppBar
+        appBarTheme: const AppBarTheme(
+          color: colorPrincipal,
+        ),
+      );
 }
