@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_tap_customer/config/config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 
@@ -84,13 +82,15 @@ class OrderScreenState extends ConsumerState<OrderScreen> {
     // final saveOrdersDb = ref.read(ordersSelectedProvider.notifier).saveOrders();
     final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
     Order order = ref.watch(orderSelectedProvider);
+    List<Order> orders = ref.watch(ordersSelectedProvider);
+    // Order orders = ref.watch(ordersSelectedProvider);
     return Scaffold(
       appBar: AppBar(title: const Text("Mesa")),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-              child: const Text("+"),
+              child: const Text("print"),
               onPressed: () => {
                     getOrderDb()
                     // setAddDish(name: "Ajiaco", photos: [], price: 2000),
@@ -100,8 +100,58 @@ class OrderScreenState extends ConsumerState<OrderScreen> {
           FloatingActionButton(
               child: const Text("save"),
               onPressed: () => {
-                    ref.read(ordersSelectedProvider.notifier).saveOrders()
+                    // ref.read(ordersSelectedProvider.notifier).saveOrders(orders)
+                    ref.read(ordersSelectedProvider.notifier).saveOrders([
+                      Order(
+                          idOrder: "1",
+                          nameCustomer: "Luz",
+                          priceTotal: 1,
+                          timeTotal: 2,
+                          amountTotal: 3,
+                          dishes: [
+                            Dish(
+                                idDish: "2",
+                                name: "gaseosa",
+                                photos: [],
+                                price: 20000,
+                                ingredients: ["Colombiana"]),
+                          ]),
+                      Order(
+                          idOrder: "2",
+                          nameCustomer: "Flor",
+                          priceTotal: 0,
+                          timeTotal: 0,
+                          amountTotal: 0,
+                          dishes: [
+                            Dish(
+                                idDish: "2",
+                                name: "sol  ",
+                                photos: [],
+                                price: 20000,
+                               ),
+                          ]),
+                    ])
                     // _get()
+                  }),
+          FloatingActionButton(
+              child: const Text("print inst"),
+              onPressed: () => {
+                    print(
+                        // Order(
+                        //     idOrder: "1",
+                        //     nameCustomer: "Paco",
+                        //     priceTotal: 0,
+                        //     timeTotal: 0,
+                        //     amountTotal: 0,
+                        //     dishes: [
+                        //       Dish(
+                        //           idDish: "2",
+                        //           name: "gaseosa",
+                        //           photos: [],
+                        //           price: 20000,
+                        //           ingredients: ["Colombiana"]),
+                        //     ]).toJson(),
+                        "asd")
                   }),
         ],
       ),

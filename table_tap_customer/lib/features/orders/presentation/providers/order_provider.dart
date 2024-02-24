@@ -13,8 +13,6 @@ class OrderSelected extends _$OrderSelected {
           priceTotal: 0,
           timeTotal: 0,
           amountTotal: 0,
-          // price: 2000,
-          // photos: ["https://i.ibb.co/m6PqGyG/Food-Picture.png", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU"],
           dishes: [
             Dish(
               idDish: "1",
@@ -75,6 +73,7 @@ class OrderSelected extends _$OrderSelected {
       Dish(idDish: "asdasd", name: name, photos: photos, price: price)
     ]);
   }
+  
   void addAmountDish(String id) {
     state = state.copyWith(
         dishes: state.dishes.map((dish) {
@@ -101,22 +100,3 @@ class OrderSelected extends _$OrderSelected {
     state = state.copyWith(dishes: dishesList2);
   }
 }
-
-// @Riverpod(keepAlive: true)
-// class OrderDishesSelected extends _$OrderDishesSelected {
-//   @override
-//   List<Dish> build() {
-//     return [];
-//   }
-
-//   void setAddDish(Dish newDish) {
-//     state = [
-//       ...state,
-//       Dish(
-//           idDish: newDish.idDish,
-//           name: newDish.name,
-//           photos: [],
-//           price: newDish.price)
-//     ];
-//   }
-// }
