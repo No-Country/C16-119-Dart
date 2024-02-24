@@ -2,13 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:table_tap_customer/features/orders/orders.dart';
 import 'package:table_tap_customer/features/products/products.dart';
 
-// List routes = ["/product"];
-// Map<String, String> routes2 = {"product" : "/product"};
-// enum Routes {as}
 final goRouterProvider = GoRouter(
-  initialLocation: '/order',
-  // initialLocation: '/product',
-  // initialLocation: '/',
+  initialLocation: '/',
   // refreshListenable: goRouterNotifier,
   routes: [
     ///* Primera pantalla
@@ -40,7 +35,7 @@ final goRouterProvider = GoRouter(
     ),
     GoRoute(
       path: "/order", // /product/new
-      builder: (context, state) => OrderScreen(
+      builder: (context, state) => const OrderScreen(
           // productId: state.params['id'] ?? 'no-id',
           ),
     ),
