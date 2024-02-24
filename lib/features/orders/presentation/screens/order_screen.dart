@@ -1,16 +1,87 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_tap_customer/config/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
-import 'package:table_tap_customer/features/orders/presentation/providers/order_provider.dart';
+import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 
-class OrderScreen extends ConsumerWidget {
+class OrderScreen extends ConsumerStatefulWidget {
+  const OrderScreen({super.key});
+
+  @override
+  OrderScreenState createState() => OrderScreenState();
+}
+
+// class OrderScreen extends StatelessWidget {
+class OrderScreenState extends ConsumerState<OrderScreen> {
   final themeTextStyle = ThemeTextStyle();
   final palette = ThemeColors.palette();
 
-  OrderScreen({super.key});
+  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  // void _insert() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   // await prefs.setInt("asd", 20);
+  //   prefs.setString(
+  //       "user",
+  //       jsonEncode({
+  //         "orders": [
+  //           {
+  //             "amountTotal": 2,
+  //             "nameCustomer": "paco",
+  //             "priceTotal": 20000,
+  //             "timeTotal": 25,
+  //             "dishes": [
+  //               {
+  //                 "name": "ajiaco",
+  //                 "price": 10000,
+  //                 "amount": 2,
+  //                 "photos": [],
+  //                 "ingredients": []
+  //               }
+  //             ]
+  //           },
+  //           {
+  //             "amountTotal": 3,
+  //             "nameCustomer": "sol",
+  //             "priceTotal": 30000,
+  //             "timeTotal": 25
+  //           },
+  //           {
+  //             "amountTotal": 1,
+  //             "nameCustomer": "luna",
+  //             "priceTotal": 15000,
+  //             "timeTotal": 15
+  //           }
+  //         ]
+  //       }));
+
+  //   print("insert");
+  // }
+
+  // void _get() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   final res = await prefs.getString("user");
+  //   print(res.runtimeType);
+  //   print(jsonDecode(res!).runtimeType);
+  // }
+
+  // final db = DbService();
+  // void _get() async {
+  //   await db.getData();
+  // }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final getOrderDb = ref.read(ordersSelectedProvider.notifier).getOrdersDb;
+    // final saveOrdersDb = ref.read(ordersSelectedProvider.notifier).saveOrders();
     final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
     Order order = ref.watch(orderSelectedProvider);
     return Scaffold(
@@ -21,8 +92,16 @@ class OrderScreen extends ConsumerWidget {
           FloatingActionButton(
               child: const Text("+"),
               onPressed: () => {
-                    setAddDish(name: "Ajiaco", photos: [], price: 2000),
+                    getOrderDb()
+                    // setAddDish(name: "Ajiaco", photos: [], price: 2000),
+                    // _insert()
                     // setNewNameCustomer( newNameCustomer: "LUis")
+                  }),
+          FloatingActionButton(
+              child: const Text("save"),
+              onPressed: () => {
+                    ref.read(ordersSelectedProvider.notifier).saveOrders()
+                    // _get()
                   }),
         ],
       ),

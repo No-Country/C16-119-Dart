@@ -1,13 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_tap_customer/features/dish/domain/domain.dart';
+import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 
 part 'order_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class OrderSelected extends _$OrderSelected {
-  // List<Dish> orderDishes = ref.watch(orderDishesSelectedProvider);
-
   @override
   Order build() => Order(
           idOrder: "1",
@@ -77,7 +75,6 @@ class OrderSelected extends _$OrderSelected {
       Dish(idDish: "asdasd", name: name, photos: photos, price: price)
     ]);
   }
-
   void addAmountDish(String id) {
     state = state.copyWith(
         dishes: state.dishes.map((dish) {

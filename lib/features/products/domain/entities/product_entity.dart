@@ -1,4 +1,4 @@
-import 'package:table_tap_customer/features/dish/domain/domain.dart';
+import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 
 class Product {
   String idProduct;
