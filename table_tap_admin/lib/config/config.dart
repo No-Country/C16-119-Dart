@@ -1,3 +1,3 @@
 export './theme.dart';
-export './constans.dart';
+export 'constants/constans.dart';
 export './router.dart';
