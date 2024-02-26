@@ -9,21 +9,28 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   @override
   Future<List<Product>> getProductsByPage(
       {int limit = 10, int offset = 0}) async {
-    CollectionReference collectionReferenceProducts =
-        db.collection(DbNames.products);
-    QuerySnapshot queryProducts = await collectionReferenceProducts.get();
-    List<Product> productsList = [];
+    try {
+      CollectionReference collectionReferenceProducts =
+          db.collection(DbNames.products);
+      QuerySnapshot queryProducts = await collectionReferenceProducts
+          .where("available", isEqualTo: true)
+          .get();
+      List<Product> productsList = [];
 
-    queryProducts.docs.forEach((element) {
-      Map<dynamic, dynamic> res = element.data() as Map;
-      res = {...res, "id": element.id};
-      productsList
-          .add(ProductMapper.jsonToEntity(res.map((key, value) => MapEntry(
-                key,
-                value,
-              ))));
-    });
-    return productsList;
+      for (var element in queryProducts.docs) {
+        Map<dynamic, dynamic> res = element.data() as Map;
+        res = {...res, "id": element.id};
+        productsList
+            .add(ProductMapper.jsonToEntity(res.map((key, value) => MapEntry(
+                  key,
+                  value,
+                ))));
+      }
+      return productsList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
   @override
@@ -64,5 +71,4 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     //   throw Exception();
     // }
   }
-
 }
