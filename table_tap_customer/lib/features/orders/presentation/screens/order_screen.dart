@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
+import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
 
 class OrderScreen extends ConsumerStatefulWidget {
   const OrderScreen({super.key});
@@ -48,11 +50,12 @@ class OrderScreenState extends ConsumerState<OrderScreen> {
 class _OrderView extends ConsumerWidget {
   final themeTextStyle = ThemeTextStyle();
   final palette = ThemeColors.palette();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productsList = ref.watch(productsListProvider);
     Order order = ref.watch(orderSelectedProvider);
     final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
+    final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
     final removeAmountDish =
         ref.read(orderSelectedProvider.notifier).setRemoveDish;
     return Padding(
@@ -70,7 +73,8 @@ class _OrderView extends ConsumerWidget {
                     onPressed: () {},
                     icon: Icon(
                       Icons.remove_shopping_cart_rounded,
-                      color: palette.secondaryText,size: 30,
+                      color: palette.secondaryText,
+                      size: 30,
                     ))
               ],
             ))
@@ -101,17 +105,24 @@ class _OrderView extends ConsumerWidget {
                         tileColor: palette.form,
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: FadeInImage(
-                              image: imageProvider,
-                              placeholder:
-                                  const AssetImage('assets/loaders/loader.gif'),
-                              imageErrorBuilder: (context, error, stackTrace) =>
-                                  Image.asset(
-                                    'assets/images/no_image.jpg',
-                                  ),
-                              height: 60,
-                              width: 60,
-                              fit: BoxFit.cover),
+                          child: InkWell(
+                            onTap: () {
+                              setProduct(productsList.firstWhere((element) =>
+                                  element.dish.idDish == dish.idDish));
+                              context.push(RoutesNames.product);
+                            },
+                            child: FadeInImage(
+                                image: imageProvider,
+                                placeholder: const AssetImage(
+                                    'assets/loaders/loader.gif'),
+                                imageErrorBuilder:
+                                    (context, error, stackTrace) => Image.asset(
+                                          'assets/images/no_image.jpg',
+                                        ),
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.cover),
+                          ),
                         ),
                         title: Text(dish.name, style: themeTextStyle.h3),
                         subtitle: Column(
