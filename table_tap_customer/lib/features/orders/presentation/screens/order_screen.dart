@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_tap_customer/config/config.dart';
-import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 
@@ -12,64 +11,9 @@ class OrderScreen extends ConsumerStatefulWidget {
   OrderScreenState createState() => OrderScreenState();
 }
 
-// class OrderScreen extends StatelessWidget {
 class OrderScreenState extends ConsumerState<OrderScreen> {
   final themeTextStyle = ThemeTextStyle();
   final palette = ThemeColors.palette();
-
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-  // void _insert() async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   // await prefs.setInt("asd", 20);
-  //   prefs.setString(
-  //       "user",
-  //       jsonEncode({
-  //         "orders": [
-  //           {
-  //             "amountTotal": 2,
-  //             "nameCustomer": "paco",
-  //             "priceTotal": 20000,
-  //             "timeTotal": 25,
-  //             "dishes": [
-  //               {
-  //                 "name": "ajiaco",
-  //                 "price": 10000,
-  //                 "amount": 2,
-  //                 "photos": [],
-  //                 "ingredients": []
-  //               }
-  //             ]
-  //           },
-  //           {
-  //             "amountTotal": 3,
-  //             "nameCustomer": "sol",
-  //             "priceTotal": 30000,
-  //             "timeTotal": 25
-  //           },
-  //           {
-  //             "amountTotal": 1,
-  //             "nameCustomer": "luna",
-  //             "priceTotal": 15000,
-  //             "timeTotal": 15
-  //           }
-  //         ]
-  //       }));
-
-  //   print("insert");
-  // }
-
-  // void _get() async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   final res = await prefs.getString("user");
-  //   print(res.runtimeType);
-  //   print(jsonDecode(res!).runtimeType);
-  // }
-
-  // final db = DbService();
-  // void _get() async {
-  //   await db.getData();
-  // }
 
   @override
   void initState() {
@@ -78,82 +22,23 @@ class OrderScreenState extends ConsumerState<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final getOrderDb = ref.read(ordersSelectedProvider.notifier).getOrdersDb;
-    // final saveOrdersDb = ref.read(ordersSelectedProvider.notifier).saveOrders();
-    final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
-    Order order = ref.watch(orderSelectedProvider);
-    List<Order> orders = ref.watch(ordersSelectedProvider);
-    // Order orders = ref.watch(ordersSelectedProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text("Mesa")),
-      floatingActionButton: Column(
+      appBar: AppBar(
+          title: Text(
+            "Mesa",
+            style: TextStyle(color: palette.primaryText),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Icon(
+                Icons.receipt,
+                color: palette.secondaryText,
+              ),
+            )
+          ]),
+      floatingActionButton: const Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-              child: const Text("print"),
-              onPressed: () => {
-                    getOrderDb()
-                    // setAddDish(name: "Ajiaco", photos: [], price: 2000),
-                    // _insert()
-                    // setNewNameCustomer( newNameCustomer: "LUis")
-                  }),
-          FloatingActionButton(
-              child: const Text("save"),
-              onPressed: () => {
-                    // ref.read(ordersSelectedProvider.notifier).saveOrders(orders)
-                    ref.read(ordersSelectedProvider.notifier).saveOrders([
-                      Order(
-                          idOrder: "1",
-                          nameCustomer: "Luz",
-                          priceTotal: 1,
-                          timeTotal: 2,
-                          amountTotal: 3,
-                          dishes: [
-                            Dish(
-                                idDish: "2",
-                                name: "gaseosa",
-                                photos: [],
-                                price: 20000,
-                                ingredients: ["Colombiana"]),
-                          ]),
-                      Order(
-                          idOrder: "2",
-                          nameCustomer: "Flor",
-                          priceTotal: 0,
-                          timeTotal: 0,
-                          amountTotal: 0,
-                          dishes: [
-                            Dish(
-                                idDish: "2",
-                                name: "sol  ",
-                                photos: [],
-                                price: 20000,
-                               ),
-                          ]),
-                    ])
-                    // _get()
-                  }),
-          FloatingActionButton(
-              child: const Text("print inst"),
-              onPressed: () => {
-                    print(
-                        // Order(
-                        //     idOrder: "1",
-                        //     nameCustomer: "Paco",
-                        //     priceTotal: 0,
-                        //     timeTotal: 0,
-                        //     amountTotal: 0,
-                        //     dishes: [
-                        //       Dish(
-                        //           idDish: "2",
-                        //           name: "gaseosa",
-                        //           photos: [],
-                        //           price: 20000,
-                        //           ingredients: ["Colombiana"]),
-                        //     ]).toJson(),
-                        "asd")
-                  }),
-        ],
       ),
       body: _OrderView(),
     );
@@ -167,19 +52,12 @@ class _OrderView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Order order = ref.watch(orderSelectedProvider);
-    final addAmountDish =
-        ref.read(orderSelectedProvider.notifier).addAmountDish;
+    final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
     final removeAmountDish =
-        ref.read(orderSelectedProvider.notifier).removeAmountDish;
-    // List<Dish> orderDishes = ref.watch(orderDishesSelectedProvider);
+        ref.read(orderSelectedProvider.notifier).setRemoveDish;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Column(children: [
-        Text(
-          "Carrito ${order.nameCustomer}",
-          style: themeTextStyle.h1,
-          textAlign: TextAlign.end,
-        ),
         const SizedBox(
           height: 25,
         ),
@@ -213,6 +91,8 @@ class _OrderView extends ConsumerWidget {
                             Image.asset(
                               'assets/images/no_image.jpg',
                             ),
+                        height: 60,
+                        width: 60,
                         fit: BoxFit.cover),
                   ),
                   title: Text(dish.name, style: themeTextStyle.h3),
@@ -224,7 +104,7 @@ class _OrderView extends ConsumerWidget {
                         children: [
                           Column(
                             children: [
-                              Text("\$ 35",
+                              Text("\$ ${dish.price}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w800,
                                       fontSize: 17,
@@ -262,8 +142,7 @@ class _OrderView extends ConsumerWidget {
                                     radius: 21,
                                     backgroundColor: palette.main,
                                     child: IconButton(
-                                      onPressed: () =>
-                                          addAmountDish(dish.idDish),
+                                      onPressed: () => setAddDish(dish),
                                       icon: const Icon(Icons.add),
                                       color: palette.light,
                                     ))
