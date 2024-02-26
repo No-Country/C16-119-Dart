@@ -52,13 +52,7 @@ class _ProductView extends ConsumerWidget {
         SizedBox(
           height: 350,
           width: 600,
-          child: _ImageGallery(images: product.dish.photos
-              // [
-              //   "https://i.ibb.co/m6PqGyG/Food-Picture.png",
-              //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU",
-              //   "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-              // ]
-              ),
+          child: _ImageGallery(images: product.dish.photos),
         ),
         Padding(
           padding: const EdgeInsets.only(
@@ -150,7 +144,7 @@ class _ProductDetail extends ConsumerWidget {
                                   width: 10,
                                 ),
                                 Text(
-                                  "Restaurant name",
+                                  product.category,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
