@@ -39,5 +39,11 @@ final goRouterProvider = GoRouter(
           // productId: state.params['id'] ?? 'no-id',
           ),
     ),
+      GoRoute(
+      path: "/products", // /product/new
+      builder: (context, state) => ProductsScreen(
+          // productId: state.params['id'] ?? 'no-id',
+          ),
+    ),
   ],
 );

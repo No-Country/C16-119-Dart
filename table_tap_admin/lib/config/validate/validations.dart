@@ -33,4 +33,11 @@ class Validate {
     }
     return false;
   }
+
+  String validateIsTextEmpity(String text,) {
+    if (text.isEmpty) {
+      return "Este campo es requerido..";
+    }
+    return '';
+  }
 }

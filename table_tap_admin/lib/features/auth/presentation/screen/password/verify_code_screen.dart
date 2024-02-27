@@ -40,7 +40,7 @@ class _RecuerpationPasswordScreenState extends ConsumerState<VerifyCodeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const HeaderScreen(
+              const HeaderCustomer(
                 title: Constants.verifyTitle,
                 description: Constants.verifyDescription,
               ),

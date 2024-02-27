@@ -32,4 +32,8 @@ class Constants {
   static const String changeDescription = "Ingresa su nueva contraseña.";
 
 
+  // constants basedatos
+  static const String db ="";
+  static const String tableUser ="users";
+  static const String tableProducts ="products";
 }

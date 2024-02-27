@@ -43,7 +43,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
             child: Center(
               child: Column(
                 children: [
-                  const HeaderScreen(
+                  const HeaderCustomer(
                     title: Constants.loginTitle,
                     description: Constants.loginDescription,
                   ),

@@ -33,6 +33,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               press: () => {handleCloseSession(context)},
             ),
             cargando ? const LoadingCustomer() : Container(),
+            const SizedBox(height: 20),
+            ButtonCustomer(
+              text: 'Modulo productos',
+              press: () => (context.push(RoutesConstants.products)),
+            ),
+            const SizedBox(height: 20),
+            ButtonCustomer(
+              text: 'Modulo restaurante',
+              press: () => (context.push(RoutesConstants.restaurant_details)),
+            ),
+            const SizedBox(height: 20),
+            ButtonCustomer(
+              text: 'Modulo mesa',
+              press: () => (context.push(RoutesConstants.tables)),
+            ),
+            const SizedBox(height: 20),
+            ButtonCustomer(
+              text: 'Modulo ordenes',
+              press: () => (context.push(RoutesConstants.restaurant_details)),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
