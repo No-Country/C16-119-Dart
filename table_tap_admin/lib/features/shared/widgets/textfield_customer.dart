@@ -8,6 +8,7 @@ class TextFieldCustom extends StatefulWidget {
   final bool? obscureText;
   final FormFieldValidator? validator;
   final TextEditingController? controller;
+  final String? text;
 
   const TextFieldCustom({
     super.key,
@@ -17,6 +18,7 @@ class TextFieldCustom extends StatefulWidget {
     this.validator,
     this.controller,
     this.icono,
+    this.text,
   });
 
   @override
@@ -27,25 +29,41 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
   bool isVisiblePass = true;
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      keyboardType: widget.keyboardType,
-      obscureText: widget.obscureText! && isVisiblePass,
-      validator: widget.validator,
-      controller: widget.controller,
-      style: Theme.of(context).textTheme.bodySmall,
-      decoration: _buildInputDecoration(context),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.text != null
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: Text(
+                  widget.text!,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              )
+            : Container(),
+        TextFormField(
+          keyboardType: widget.keyboardType,
+          obscureText: widget.obscureText! && isVisiblePass,
+          validator: widget.validator,
+          controller: widget.controller,
+          style: Theme.of(context).textTheme.bodySmall,
+          decoration: _buildInputDecoration(context),
+        ),
+      ],
     );
   }
 
   InputDecoration _buildInputDecoration(BuildContext context) {
     return InputDecoration(
-      prefixIcon: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 10),
-        child: Icon(
-          widget.icono,
-          color: colorPrimary,
-        ),
-      ),
+      prefixIcon: widget.icono != null
+          ? Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10),
+              child: Icon(
+                widget.icono,
+                color: colorPrimary,
+              ),
+            )
+          : null,
       suffixIcon: widget.obscureText!
           ? Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -84,7 +102,7 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
 
   OutlineInputBorder _buildOutlineInputBorder(BuildContext context) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(55.0),
+      borderRadius: BorderRadius.circular(50.0),
       borderSide: BorderSide(
         color: Theme.of(context).primaryColorLight,
       ),

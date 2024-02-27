@@ -38,7 +38,7 @@ class ChangeScreenState extends ConsumerState<ChangeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const HeaderScreen(
+                const HeaderCustomer(
                   title: Constants.changeTitle,
                   description: Constants.changeDescription,
                 ),

@@ -56,7 +56,7 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
             child: Column(
               children: [
-                const HeaderScreen(
+                const HeaderCustomer(
                   title: Constants.recoveryTitle,
                   description: Constants.registerDescription,
                 ),
