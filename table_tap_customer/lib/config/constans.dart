@@ -5,7 +5,8 @@ class DbNames {
 }
 
 class RoutesNames {
-  static const products = "/";
+  static const scanner = "/";
+  static const products = "/products";
   static const product = "/product";
   static const order = "/order";
   static const orders = "/orders";
