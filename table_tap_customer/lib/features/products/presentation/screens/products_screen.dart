@@ -136,7 +136,7 @@ class _ProductsList extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text("Categorías", style: ThemeTextStyle().h1),
           ),
           SegmentedButton(
@@ -191,12 +191,15 @@ class _ProductsList extends ConsumerWidget {
               selected: {selectedCategory},
               onSelectionChanged: (value) =>
                   setCategoryProductsFiltered(value.first)),
+          SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
-                  childAspectRatio: 4 / 5,
-                  crossAxisSpacing: 20,
+                  childAspectRatio: 3 / 4,
+                  crossAxisSpacing: 15,
                   mainAxisSpacing: 20),
               itemCount: productsList.length,
               itemBuilder: (context, index) {
@@ -231,7 +234,7 @@ class _ProductsList extends ConsumerWidget {
                                           'assets/images/no_image.jpg',
                                         ),
                                 height: 150,
-                                width: 165,
+                                width: 200,
                                 fit: BoxFit.cover),
                           ),
                         ),
@@ -255,6 +258,9 @@ class _ProductsList extends ConsumerWidget {
                           ),
                         ),
                       ],
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     Column(
                       children: [
