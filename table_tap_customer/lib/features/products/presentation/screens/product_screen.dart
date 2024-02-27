@@ -247,7 +247,7 @@ class _ProductDetail extends ConsumerWidget {
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       title: Text(
-                        "Ingredients",
+                        "Ingredientes",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,

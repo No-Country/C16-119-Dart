@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class HeaderScreen extends StatelessWidget {
+class HeaderCustomer extends StatelessWidget {
   final String title;
   final String description;
-  const HeaderScreen({
+  const HeaderCustomer({
     Key? key,
     required this.title,
     required this.description,

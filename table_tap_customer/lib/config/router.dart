@@ -6,7 +6,7 @@ import 'package:table_tap_customer/features/products/products.dart';
 // Map<String, String> routes2 = {"product" : "/product"};
 // enum Routes {as}
 final goRouterProvider = GoRouter(
-  initialLocation: '/order',
+  initialLocation: '/product',
   // initialLocation: '/product',
   // initialLocation: '/',
   // refreshListenable: goRouterNotifier,
@@ -41,6 +41,12 @@ final goRouterProvider = GoRouter(
     GoRoute(
       path: "/order", // /product/new
       builder: (context, state) => OrderScreen(
+          // productId: state.params['id'] ?? 'no-id',
+          ),
+    ),
+      GoRoute(
+      path: "/products", // /product/new
+      builder: (context, state) => ProductsScreen(
           // productId: state.params['id'] ?? 'no-id',
           ),
     ),

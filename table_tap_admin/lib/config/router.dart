@@ -7,6 +7,14 @@ import 'package:table_tap_admin/features/auth/presentation/screen/password/verif
 import 'package:table_tap_admin/features/auth/presentation/screen/register/register_screen.dart';
 import 'package:table_tap_admin/features/auth/presentation/screen/splash/splash_screen.dart';
 import 'package:table_tap_admin/features/home/presentation/screen/home_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/product/product_details_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/product/product_register_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/details_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/screen/table_details_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/screen/table_register_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
 
 final goRouterProvider = GoRouter(
   initialLocation: RoutesConstants.splash,
@@ -38,6 +46,38 @@ final goRouterProvider = GoRouter(
     GoRoute(
       path: RoutesConstants.home,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.restaurant_register,
+      builder: (context, state) => RegisterResScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.restaurant_details,
+      builder: (context, state) => const DetailsRestScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.products,
+      builder: (context, state) => const ProductScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.productAdd,
+      builder: (context, state) => const ProductAddScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.productDetail,
+      builder: (context, state) => const ProductDetailsScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.tables,
+      builder: (context, state) => const TableScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.tableDetail,
+      builder: (context, state) => const TableDetailsScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.tableAdd,
+      builder: (context, state) => const TableRegisterScreen(),
     ),
   ],
 );
