@@ -2,6 +2,7 @@ class DbNames {
   static const products = "products";
   static const users = "users";
   static const orders = "ordes";
+  static const tables = "tables";
 }
 
 class RoutesNames {
