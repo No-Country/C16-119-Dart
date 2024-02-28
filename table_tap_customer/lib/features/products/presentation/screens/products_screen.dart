@@ -7,6 +7,7 @@ import 'package:table_tap_customer/features/orders/orders.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
+import 'package:table_tap_customer/features/scanner/presentation/providers/tables_provider.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
   const ProductsScreen({super.key});
@@ -22,6 +23,7 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
   void initState() {
     super.initState();
     // ref.read(productsListProvider.notifier).loadNextPage();
+  //  ref.read(tablesListProvider.notifier).loadNextPage();
   }
 
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -29,6 +31,7 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final loadNextPage = ref.read(productsListProvider.notifier).loadNextPage;
+    final loadNextPage2 = ref.read(tablesListProvider.notifier).loadNextPage;
     CollectionReference collectionReferenceProducts =
         db.collection(DbNames.products);
     save() {
@@ -95,7 +98,7 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
                 height: 60,
                 width: 60,
                 child: FloatingActionButton(
-                  onPressed: () => onItemTapped(1),
+                  onPressed: () => context.push(RoutesNames.scanner),
                   child: const Icon(
                     Icons.qr_code,
                     color: Colors.white,

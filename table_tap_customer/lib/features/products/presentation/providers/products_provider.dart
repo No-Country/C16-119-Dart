@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:table_tap_customer/features/dishes/domain/entities/dish_entity.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
-import 'package:table_tap_customer/features/products/infrastructure/datasources/products_datasource_impl.dart';
+import 'package:table_tap_customer/features/products/infrastructure/datasources/tables_datasource_impl.dart';
 
 part 'products_provider.g.dart';
 
