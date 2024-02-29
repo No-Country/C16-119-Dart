@@ -72,4 +72,13 @@ class ValidationTextForm {
     }
     return null;
   }
+
+
+  String? validateIsTextEmpity(String text,) {
+    if (text.isEmpty) {
+      return "Este campo es requerido..";
+    }
+    return null;
+  }
+
 }

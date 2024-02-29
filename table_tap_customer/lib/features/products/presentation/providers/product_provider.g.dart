@@ -6,12 +6,12 @@ part of 'product_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$productSelectedHash() => r'ff99722eab4406d89041932ddc79012e14330a9d';
+String _$productSelectedHash() => r'bc1a344885c551f22c3e1f7fa6015c2e84370e02';
 
 /// See also [ProductSelected].
 @ProviderFor(ProductSelected)
 final productSelectedProvider =
-    AutoDisposeNotifierProvider<ProductSelected, Product>.internal(
+    NotifierProvider<ProductSelected, Product>.internal(
   ProductSelected.new,
   name: r'productSelectedProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final productSelectedProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$ProductSelected = AutoDisposeNotifier<Product>;
+typedef _$ProductSelected = Notifier<Product>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

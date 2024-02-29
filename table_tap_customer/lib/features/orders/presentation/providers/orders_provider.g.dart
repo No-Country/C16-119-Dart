@@ -6,7 +6,7 @@ part of 'orders_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ordersSelectedHash() => r'afed55b1866056fa366d05fb192d149ee7ccdad2';
+String _$ordersSelectedHash() => r'5b84b5d7da837000aded6080fd55f001e93a9e61';
 
 /// See also [OrdersSelected].
 @ProviderFor(OrdersSelected)

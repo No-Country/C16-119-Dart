@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/infrastructure/infrastructure.dart';
 
@@ -16,7 +15,7 @@ class OrdersSelected extends _$OrdersSelected {
 
   void getOrdersDb() async {
     final res = await SharedPreferencesDatasource().loadOrders();
-    print("soy get ---------------------");
+    state = res;
     print(res);
     // state = state.copyWith(
     //     nameCustomer: newNameCustomer,
@@ -25,53 +24,52 @@ class OrdersSelected extends _$OrdersSelected {
     //     amountTotal: newAmountTotal);
   }
 
-  void saveOrders() async {
-    await SharedPreferencesDatasource().saveOrders(
-    [Order(
-            idOrder: "1",
-            nameCustomer: "Paco",
-            priceTotal: 0,
-            timeTotal: 0,
-            amountTotal: 0,
-            dishes: [
-              Dish(
-                idDish: "1",
-                name: "ajiaco",
-                photos: [],
-                price: 15000,
-                ingredients: [
-                  "4 Eggs",
-                  "1/2 Butter",
-                  "Milk",
-                  "Fruits",
-                  "Flour",
-                  "Sugar",
-                  "Salad",
-                  "Walnut",
-                  "Cacao",
-                ],
-              ),
-              Dish(
-                  idDish: "2",
-                  name: "gaseosa",
-                  photos: [],
-                  price: 20000,
-                  ingredients: ["Colombiana"]),
-              Dish(
-                idDish: "3",
-                name: "agua",
-                photos: [],
-                price: 30000,
-              ),
-              Dish(
-                  idDish: "4",
-                  name: "tamal",
-                  photos: [],
-                  price: 40000,
-                  ingredients: ["arroz, pollo, verduras"]),
-            ])]
+  void saveOrders(List<Order> purchasedOrders) async {
+    await SharedPreferencesDatasource().saveOrders(purchasedOrders
+    // [Order(
+    //         idOrder: "1",
+    //         nameCustomer: "Paco",
+    //         priceTotal: 0,
+    //         timeTotal: 0,
+    //         amountTotal: 0,
+    //         dishes: [
+    //           Dish(
+    //             idDish: "1",
+    //             name: "ajiaco",
+    //             photos: [],
+    //             price: 15000,
+    //             ingredients: [
+    //               "4 Eggs",
+    //               "1/2 Butter",
+    //               "Milk",
+    //               "Fruits",
+    //               "Flour",
+    //               "Sugar",
+    //               "Salad",
+    //               "Walnut",
+    //               "Cacao",
+    //             ],
+    //           ),
+    //           Dish(
+    //               idDish: "2",
+    //               name: "gaseosa",
+    //               photos: [],
+    //               price: 20000,
+    //               ingredients: ["Colombiana"]),
+    //           Dish(
+    //             idDish: "3",
+    //             name: "agua",
+    //             photos: [],
+    //             price: 30000,
+    //           ),
+    //           Dish(
+    //               idDish: "4",
+    //               name: "tamal",
+    //               photos: [],
+    //               price: 40000,
+    //               ingredients: ["arroz, pollo, verduras"]),
+    //         ])]
     );
-    print("soy save ---------------------");
   }
 }
 

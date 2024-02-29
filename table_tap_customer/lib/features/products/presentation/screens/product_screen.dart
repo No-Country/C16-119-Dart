@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_customer/config/config.dart';
-import 'package:table_tap_customer/features/dishes/domain/domain.dart';
+import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
 
@@ -11,9 +11,6 @@ class ProductScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
-    final setProductLikes =
-        ref.read(productSelectedProvider.notifier).setProductLikes;
     ThemeColors palette = ThemeColors.palette();
     final snackBar = SnackBar(
       duration: const Duration(seconds: 2),
@@ -25,44 +22,13 @@ class ProductScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ScaffoldMessenger.of(context).clearSnackBars();
-          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // Future.delayed(
-          //     const Duration(milliseconds: 500), () => context.pop());
-          setProductLikes(100);
-          // setProduct(Product(
-          //     idProduct: "asd",
-          //     // name: "chocolate",
-          //     // price: 12,
-          //     time: 12,
-          //     likes: 12,
-          //     category: "pasd",
-          //     // photos: [
-          //     //   "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-          //     // ],
-          //     description: "holi",
-          //     dish: Dish(
-          //       idDish: "234",
-          //       name: "chocolate",
-          //       photos: [
-          //         "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-          //       ],
-          //       price: 2000,
-          //       ingredients: [
-          //         "milk",
-          //         "milk",
-          //         "milk",
-          //       ],
-          //     ),
-          //     available: true));
-          // if (productState.product == null) return;
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          ref
+              .read(orderSelectedProvider.notifier)
+              .setAddDish(ref.watch(productSelectedProvider).dish);
 
-          // ref
-          //     .read(productFormProvider(productState.product!).notifier)
-          //     .onFormSubmit()
-          //     .then((value) {
-          //   if (!value) return;
-          //   showSnackbar(context);
-          // });
+          Future.delayed(
+              const Duration(milliseconds: 500), () => context.pop());
         },
         child: Icon(
           Icons.add,
@@ -86,13 +52,7 @@ class _ProductView extends ConsumerWidget {
         SizedBox(
           height: 350,
           width: 600,
-          child: _ImageGallery(images: product.dish.photos
-              // [
-              //   "https://i.ibb.co/m6PqGyG/Food-Picture.png",
-              //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHcAO6UsKGnm6ljLkTyEDi8Dmzumf_JM22EM4OSPVaQUQJxEeEWTcowWS1RgohLri8WSY&usqp=CAU",
-              //   "https://vecinavegetariana.com/wp-content/uploads/2022/04/Bandeja-Paisa-4.jpeg"
-              // ]
-              ),
+          child: _ImageGallery(images: product.dish.photos),
         ),
         Padding(
           padding: const EdgeInsets.only(
@@ -102,7 +62,7 @@ class _ProductView extends ConsumerWidget {
           child: FloatingActionButton(
               heroTag: "btn1",
               backgroundColor: palette.light.withOpacity(0.2),
-              onPressed: () => context.pop("/"),
+              onPressed: () => context.pop(),
               child: Icon(
                 Icons.arrow_back_ios_new,
                 color: palette.light,
@@ -184,7 +144,7 @@ class _ProductDetail extends ConsumerWidget {
                                   width: 10,
                                 ),
                                 Text(
-                                  "Restaurant name",
+                                  product.category,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,

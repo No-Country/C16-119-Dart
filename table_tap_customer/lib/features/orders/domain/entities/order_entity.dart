@@ -33,4 +33,13 @@ class Order {
         amountTotal: amountTotal ?? this.amountTotal,
         dishes: dishes ?? this.dishes,
       );
+
+  Map<String, dynamic> toJson() => {
+        "idOrder": idOrder,
+        "amountTotal": amountTotal,
+        "nameCustomer": nameCustomer,
+        "priceTotal": priceTotal,
+        "timeTotal": timeTotal,
+        "dishes": List<dynamic>.from(dishes.map((x) => x.toJson())),
+      };
 }

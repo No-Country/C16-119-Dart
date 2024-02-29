@@ -29,4 +29,15 @@ class Dish {
         amount: amount ?? this.amount,
         ingredients: ingredients ?? this.ingredients,
       );
+
+  Map<String, dynamic> toJson() => {
+        "idDish": idDish,
+        "name": name,
+        "price": price,
+        "amount": amount,
+        "photos": List<dynamic>.from(photos.map((x) => x)),
+        "ingredients": ingredients != null
+            ? List<dynamic>.from(ingredients!.map((x) => x))
+            : [],
+      };
 }

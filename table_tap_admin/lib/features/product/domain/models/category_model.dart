@@ -9,14 +9,13 @@ class CategoryModel {
     this.status,
   });
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
-        id: json['id'],
+  factory CategoryModel.fromJson(Map<String, dynamic> json, String id) => CategoryModel(
+        id: id,
         name: json['name'],
         status: json['status'] as bool,
       );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'name': name,
         'status': status,
       };

@@ -18,13 +18,10 @@ class ProductDatasourceImpl implements ProductDatasource {
 
   @override
   Future<bool> deleteProduct(String id) async {
-    print("Eliminando producto db $id");
     try {
       await _firebase.collection(Constants.tableProducts).doc(id).delete();
       return true;
     } catch (e) {
-      print("Eliminando producto errror ${e.toString()}");
-
       return false;
     }
   }
@@ -41,7 +38,6 @@ class ProductDatasourceImpl implements ProductDatasource {
         return null;
       }
     } catch (e) {
-      print('Error al obtener producto por ID: $e');
       return null;
     }
   }
@@ -56,7 +52,6 @@ class ProductDatasourceImpl implements ProductDatasource {
             doc.data() as Map<String, dynamic>, productId);
       }).toList();
     } catch (e) {
-      print('Error al obtener productos: $e');
       return [];
     }
   }
@@ -70,7 +65,6 @@ class ProductDatasourceImpl implements ProductDatasource {
           .update(product.toJson());
       return product.copyWith(id: id);
     } catch (e) {
-      print('Error al actualizar producto: $e');
       return null;
     }
   }

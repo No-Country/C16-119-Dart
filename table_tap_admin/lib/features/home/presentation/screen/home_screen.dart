@@ -41,8 +41,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             const SizedBox(height: 20),
             ButtonCustomer(
-              text: 'Modulo restaurante',
-              press: () => (context.push(RoutesConstants.restaurant_details)),
+              text: 'Modulo categorias',
+              press: () => (context.push(RoutesConstants.categories)),
             ),
             const SizedBox(height: 20),
             ButtonCustomer(

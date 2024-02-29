@@ -8,14 +8,18 @@ class CategoriesNotifier
 
   CategoriesNotifier({required this.categoryRepository})
       : super(const AsyncLoading()) {
-    _list();
+    list();
   }
 
-  Future<void> _list() async {
-    state = await AsyncValue.guard(() async {
-      final categories = await categoryRepository.getCategories();
-      return categories;
-    });
+  Future<void> list() async {
+    try {
+      state = await AsyncValue.guard(() async {
+        final categories = await categoryRepository.getCategories();
+        return categories;
+      });
+    } catch (error) {
+      print(error);
+    }
   }
 
   Future<void> addCategory(CategoryModel category) async {
@@ -48,6 +52,27 @@ class CategoriesNotifier
       state = AsyncData(updatedCategory);
     } catch (error) {
       print(error);
+    }
+  }
+
+  CategoryModel? getCategotyById(String categoryId) {
+    if (state is AsyncData<List<CategoryModel>>) {
+      final categories = (state as AsyncData<List<CategoryModel>>).value;
+      return categories.firstWhere(
+        (category) => category.id == categoryId,
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<CategoryModel>> getCateroryAll() async {
+    await list();
+    if (state is AsyncData<List<CategoryModel>>) {
+      final categories = (state as AsyncData<List<CategoryModel>>).value;
+      return categories;
+    } else {
+      return [];
     }
   }
 }

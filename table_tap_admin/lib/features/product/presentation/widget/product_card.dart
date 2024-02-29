@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
+import 'package:table_tap_admin/features/shared/widgets/text_status.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -45,13 +46,10 @@ class ProductCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         Text(
-                          product.available ? "Activo" : "Inactivo",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        Text(
                           product.categoryId,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        TextStatusCustomer(status: product.available),
                       ],
                     )
                   ],

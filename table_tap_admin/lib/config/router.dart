@@ -7,6 +7,8 @@ import 'package:table_tap_admin/features/auth/presentation/screen/password/verif
 import 'package:table_tap_admin/features/auth/presentation/screen/register/register_screen.dart';
 import 'package:table_tap_admin/features/auth/presentation/screen/splash/splash_screen.dart';
 import 'package:table_tap_admin/features/home/presentation/screen/home_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/category/category_edit_modal.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_details_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_edit_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_register_screen.dart';
@@ -83,6 +85,10 @@ final goRouterProvider = GoRouter(
         final String productId = (extra as Map<String, dynamic>)['id'] ?? '';
         return ProductEditScreen(productId: productId);
       },
+    ),
+    GoRoute(
+      path: RoutesConstants.categories,
+      builder: (context, state) => const CategoryScreen(),
     ),
     GoRoute(
       path: RoutesConstants.tables,
