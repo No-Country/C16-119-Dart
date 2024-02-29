@@ -36,4 +36,5 @@ class Constants {
   static const String db ="";
   static const String tableUser ="users";
   static const String tableProducts ="products";
+  static const String tableTable ="tables";
 }

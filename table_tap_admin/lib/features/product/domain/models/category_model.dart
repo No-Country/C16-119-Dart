@@ -8,4 +8,28 @@ class CategoryModel {
     required this.name,
     this.status,
   });
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
+        id: json['id'],
+        name: json['name'],
+        status: json['status'] as bool,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'status': status,
+      };
+
+  CategoryModel copyWith({
+    String? id,
+    String? name,
+    bool? status,
+  }) {
+    return CategoryModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      status: status ?? this.status,
+    );
+  }
 }

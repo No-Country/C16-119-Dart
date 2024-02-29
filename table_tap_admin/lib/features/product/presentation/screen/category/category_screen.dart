@@ -8,14 +8,16 @@ import 'package:table_tap_admin/features/product/presentation/riverpod/provider.
 import 'package:table_tap_admin/features/product/presentation/widget/product_card.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 
-class ProductScreen extends ConsumerStatefulWidget {
-  const ProductScreen({Key? key}) : super(key: key);
+class CategoryScreen extends ConsumerStatefulWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ProductScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CategoryScreenState();
 }
 
-class _ProductScreenState extends ConsumerState<ProductScreen> {
+
+
+class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   final List<ProductModel> listProduct = [];
   bool loading = true;
   @override

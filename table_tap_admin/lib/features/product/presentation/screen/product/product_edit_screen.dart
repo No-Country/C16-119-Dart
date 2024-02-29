@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/config/functions/message_customer.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
@@ -13,15 +15,20 @@ import 'package:table_tap_admin/features/shared/widgets/swich_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textarea_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
 
-class ProductAddScreen extends ConsumerStatefulWidget {
-  const ProductAddScreen({Key? key}) : super(key: key);
+class ProductEditScreen extends ConsumerStatefulWidget {
+  final String productId;
+
+  const ProductEditScreen({
+    Key? key,
+    required this.productId,
+  }) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      ProductAddScreenState();
+      ProductEditScreenState();
 }
 
-class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
+class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final ValidationTextForm _validate = ValidationTextForm();
 
@@ -41,6 +48,36 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
     'Categoría 3'
   ];
   bool isLoading = false;
+
+  @override
+  void initState() {
+    handleInitText();
+  }
+
+  handleInitText() async {
+    final productProvider = ref.read(productsProvider.notifier);
+    final product =
+        await productProvider.state.getProductById(widget.productId);
+    if (product != null) {
+      _nameController.text = product.name;
+      _descriptionController.text = product.description;
+      _priceController.text = product.price.toString();
+      _categoryController.text = product.categoryId;
+      _active = product.available;
+      _prepared = product.prepared;
+      if (_category.contains(product.categoryId)) {
+        _categoryController.text = product.categoryId;
+        print("Si esta en la lista de categorias");
+      } else {
+        print("No hay lista de productos");
+      }
+      _listIngredients.clear();
+      if (product.ingredients != null && product.ingredients!.isNotEmpty) {
+        _listIngredients.addAll(product.ingredients!);
+      }
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,13 +134,14 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
           buildSpace(),
           const Text("Categoria"),
           const SizedBox(height: 2),
-          SelectCustomer(
-            options: _category,
-            initialValue: 'seleccione',
-            onChanged: (value) {
-              _categoryController.text = value!;
-            },
-          ),
+          if (_categoryController.text.isNotEmpty)
+            SelectCustomer(
+              options: _category,
+              initialValue: _categoryController.text,
+              onChanged: (value) {
+                _categoryController.text = value!;
+              },
+            ),
           buildSpace(),
           TextFieldCustom(
             text: "Precio",
@@ -132,15 +170,16 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
               }),
           buildSpace(),
           const Text("Ingredients"),
-          IngredientsCustomer(
-            listaIngredientes: _listIngredients,
-            onIngredientsChanged: (value) {
-              setState(() {
-                _listIngredients.clear();
-                _listIngredients.addAll(value);
-              });
-            },
-          ),
+          if (_listIngredients.isNotEmpty)
+            IngredientsCustomer(
+              listaIngredientes: _listIngredients,
+              onIngredientsChanged: (value) {
+                setState(() {
+                  _listIngredients.clear();
+                  _listIngredients.addAll(value);
+                });
+              },
+            ),
           const SizedBox(height: 30),
         ],
       ),
@@ -151,63 +190,54 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
     return const SizedBox(height: 20);
   }
 
- handleSubmit() async {
-  if (_formKey.currentState!.validate()) {
-    setState(() {
-      isLoading = true;
-    });
-    // Espera para simular una solicitud al servidor
-    await Future.delayed(const Duration(seconds: 5));
-
-    // Obtener los valores del formulario
-    String name = _nameController.text;
-    String description = _descriptionController.text;
-    double price = double.parse(_priceController.text);
-    String category = _categoryController.text;
-    bool available = _active;
-    bool needsPreparation = _prepared;
-    List<String> ingredients = _listIngredients;
-
-    try {
-      // Crear una instancia de ProductModel
-      ProductModel product = ProductModel(
-        name: name,
-        description: description,
-        price: price,
-        available: available,
-        categoryId: category,
-        prepared: needsPreparation,
-        image: '',
-        ingredients: ingredients,
-      );
-
-      // Llamar al método addProduct del ProductsNotifier
-      await ref.read(productsProvider).addProduct(product);
-
-      // Limpiar los campos del formulario
-      _nameController.clear();
-      _descriptionController.clear();
-      _priceController.clear();
-      _categoryController.text = 'seleccione'; // Restablecer la selección de categoría
-      _active = false;
-      _prepared = false;
-      _listIngredients.clear();
-      setState(() {});
-
-      // Mostrar un mensaje de éxito
-      MessageSnackBar.show(context, "Producto creado exitosamente");
-    } catch (error) {
-      // Mostrar un mensaje de error
-      MessageSnackBar.show(
-          context, "Error al crear el producto: ${error.toString()}");
-    } finally {
+  handleSubmit() async {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
+      // Espera para simular una solicitud al servidor
+      await Future.delayed(const Duration(seconds: 5));
+
+      // Obtener los valores del formulario
+      String name = _nameController.text;
+      String description = _descriptionController.text;
+      double price = double.parse(_priceController.text);
+      String category = _categoryController.text;
+      bool available = _active;
+      bool needsPreparation = _prepared;
+      List<String> ingredients = _listIngredients;
+
+      try {
+        // Crear una instancia de ProductModel
+        ProductModel product = ProductModel(
+          name: name,
+          description: description,
+          price: price,
+          available: available,
+          categoryId: category,
+          prepared: needsPreparation,
+          image: '',
+          ingredients: ingredients,
+        );
+
+        // Llamar al método addProduct del ProductsNotifier
+        await ref.read(productsProvider).updateProduct(
+              product,
+              widget.productId,
+            );
+
+        // Mostrar un mensaje de éxito
+        MessageSnackBar.show(context, "Producto Actualizado con exito");
+        context.pop();
+      } catch (error) {
+        // Mostrar un mensaje de error
+        MessageSnackBar.show(
+            context, "Error al actualizar el producto: ${error.toString()}");
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 }
-
-
-
- }
