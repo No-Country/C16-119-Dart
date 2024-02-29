@@ -1,44 +1,69 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_tap_admin/config/validate/validations.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
+import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
+import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/table_provider.dart';
+import 'package:table_tap_admin/features/table/presentation/widget/qr_details_widget.dart';
 
-class TableRegisterScreen extends StatefulWidget {
+class TableRegisterScreen extends ConsumerStatefulWidget {
   const TableRegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<TableRegisterScreen> createState() => _TableRegisterScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TableRegisterScreenState();
 }
 
-class _TableRegisterScreenState extends State<TableRegisterScreen> {
+class _TableRegisterScreenState extends ConsumerState<TableRegisterScreen> {
   String data = "";
-
-  @override
-  void initState() {
-    super.initState();
-    initializeFirebase();
-  }
-
-  Future<void> initializeFirebase() async {
-    await Firebase.initializeApp();
-  }
+  TableModel? mesa;
+  final TextEditingController _numberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  Validate _validate = Validate();
 
   Future<void> generateQrCode() async {
-    // Generate a unique ID for the table
-    final tableId = '${DateTime.now().millisecondsSinceEpoch}';
-    data = tableId;
+    if (_formKey.currentState!.validate()) {
+      final tableRepository = ref.read(tableRepositoryProvider);
+      final requestTable =
+          TableModel(number: int.parse(_numberController.text), available: true);
 
-    // Save table data to Firebase
-    final tableRef =
-        FirebaseFirestore.instance.collection('tables').doc(tableId);
-    await tableRef.set({
-      'id': tableId,
-      // Add other table details as needed
-    });
-    print("El codgo es $tableId");
+      final response = await tableRepository.createTable(requestTable);
+      data = "${response.number}";
+      if (response != null) {
+        mesa = response;
+      }
+      setState(() {});
+    }
+  }
 
-    setState(() {}); // Update UI to display the generated QR code
+  Widget buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          const Text('Genera un código QR para la mesa'),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: 300,
+            child: TextFieldCustom(
+              text: "Numero de mesa",
+              controller: _numberController,
+              hintText: "Ingrese un numero",
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: 300,
+            child: ButtonCustomer(
+              text: "Generar code QR",
+              press: generateQrCode,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -50,22 +75,7 @@ class _TableRegisterScreenState extends State<TableRegisterScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
-            child: data.isEmpty
-                ? const Text('Genera un código QR para la mesa')
-                : QrImageView(
-                    data: data,
-                    backgroundColor: Colors.white,
-                    version: QrVersions.auto,
-                    size: 300.0,
-                  ),
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: 300,
-            child: ButtonCustomer(
-              text: "Generar code QR",
-              press: generateQrCode,
-            ),
+            child: data.isEmpty ? buildForm() : QrDetailsWidget(table: mesa!),
           ),
         ],
       ),

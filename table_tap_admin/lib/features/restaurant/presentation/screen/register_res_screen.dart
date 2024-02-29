@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:table_tap_admin/config/validate/validations.dart';
+import 'package:table_tap_admin/config/validate/validation_text.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/header_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
@@ -15,7 +15,7 @@ class RegisterResScreen extends StatefulWidget {
 
 class _RegisterResScreenState extends State<RegisterResScreen> {
   final _formKey = GlobalKey<FormState>();
-  final Validate validate = Validate();
+  final ValidationTextForm validate = ValidationTextForm();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addresController = TextEditingController();
   final TextEditingController cellPhoneController = TextEditingController();
