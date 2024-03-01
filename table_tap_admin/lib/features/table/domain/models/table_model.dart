@@ -1,23 +1,35 @@
-class ProductModel {
+class TableModel {
   final String? id;
   final int? number;
-  final bool? status;
+  final bool? available;
 
-  const ProductModel({
+  const TableModel({
     this.id,
     this.number,
-    this.status,
+    this.available,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+  factory TableModel.fromJson(Map<String, dynamic> json) => TableModel(
         id: json['id'],
         number: json['number'],
-        status: json['status'] as bool,
+        available: json['available'] as bool,
       );
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'number': number,
-        'status': status,
+        'available': available,
       };
+
+  TableModel copyWith({
+    String? id,
+    int? number,
+    bool? available,
+  }) {
+    return TableModel(
+      id: id ?? this.id,
+      number: number ?? this.number,
+      available: available ?? this.available,
+    );
+  }
 }

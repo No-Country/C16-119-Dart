@@ -1,53 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/config/theme.dart';
-import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
-import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
-import 'package:table_tap_admin/features/product/presentation/widget/product_card.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/category/category_add_modal.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 
-class ProductScreen extends ConsumerStatefulWidget {
-  const ProductScreen({Key? key}) : super(key: key);
+import '../../../domain/models/category_model.dart';
+import '../../riverpod/provider.dart';
+import '../../widget/category_card.dart';
+
+class CategoryScreen extends ConsumerStatefulWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ProductScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CategoryScreenState();
 }
 
-class _ProductScreenState extends ConsumerState<ProductScreen> {
-  final List<ProductModel> listProduct = [];
+class _CategoryScreenState extends ConsumerState<CategoryScreen> {
+  final List<CategoryModel> listCategory = [];
   bool loading = true;
+
   @override
   void initState() {
     super.initState();
-    handleShowProducts();
+    handleShowCategory();
   }
 
-  handleShowProducts() async {
-    final productsNotifier = ref.read(productsProvider.notifier);
-    final products = await productsNotifier.state.getProductAll();
+  handleShowCategory() async {
+    final categoryNotifier = ref.read(categoriesProvider.notifier);
+    final category = await categoryNotifier.state.getCateroryAll();
+
     setState(() {
-      listProduct.clear();
-      listProduct.addAll(products);
+      listCategory.clear();
+      listCategory.addAll(category);
       loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    handleShowProducts();
+    handleShowCategory();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Productos'),
+        title: const Text('Mis Categorias'),
       ),
       body: SafeArea(
         child: loading
             ? const LoadingCustomer()
-            : listProduct.isEmpty
-                ? const Text("No se encontraron productos")
-                : buildList(listProduct),
+            : listCategory.isEmpty
+                ? const Text("Lista de categoria vacia")
+                : buildList(listCategory),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: colorSecondary,
@@ -56,19 +58,36 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
           color: colorPrincipal,
         ),
         onPressed: () {
-          context.push(RoutesConstants.productAdd);
+          _showAddCategoryModal(context);
         },
       ),
     );
   }
 
-  Widget buildList(List<ProductModel?> productList) {
+  void _showAddCategoryModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: const CategoryAddModal(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildList(List<CategoryModel?> categoriesList) {
     return ListView.builder(
-      itemCount: productList.length,
+      itemCount: categoriesList.length,
       itemBuilder: (context, index) {
-        final product = productList[index];
+        final category = categoriesList[index];
         return Dismissible(
-          key: Key(product!.id!),
+          key: Key(category!.id!),
           confirmDismiss: (direction) async {
             // Muestra un diálogo de confirmación antes de eliminar
             return await showDialog(
@@ -76,7 +95,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
               builder: (context) => AlertDialog(
                 title: const Text("Confirmar eliminación"),
                 content: const Text(
-                    "¿Estás seguro de que quieres eliminar este producto?"),
+                    "¿Estás seguro de que quieres eliminar esta categoria?"),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -91,10 +110,8 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             );
           },
           onDismissed: (_) async {
-            final productsNotifier = ref.read(
-              productsProvider.notifier,
-            );
-            await productsNotifier.state.deleteProduct(product.id!);
+            final categoryNotifier = ref.read(categoriesProvider.notifier);
+            await categoryNotifier.state.deleteCategory(category.id!);
           },
           background: Container(
             color: Colors.red,
@@ -105,7 +122,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "Eliminan product",
+                    "Eliminando categoria",
                     style: TextStyle(color: colorPrincipal, fontSize: 25),
                   ),
                 ),
@@ -118,7 +135,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             ),
           ),
           child: ListTile(
-            title: ProductCard(product: product!),
+            title: CategoryCard(category: category),
           ),
         );
       },

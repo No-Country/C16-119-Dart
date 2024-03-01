@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class SwichCustomer extends StatefulWidget {
-  final bool isActive;
+  final bool available;
+  final String title;
   final VoidCallback onChange;
 
   const SwichCustomer({
     Key? key,
-    required this.isActive,
+    required this.available,
     required this.onChange,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -20,9 +22,9 @@ class _SwichCustomerState extends State<SwichCustomer> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Estado'),
+        Text(widget.title),
         Switch(
-          value: widget.isActive,
+          value: widget.available,
           onChanged: (value) {
             setState(() {
               widget.onChange();

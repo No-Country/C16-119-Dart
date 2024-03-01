@@ -7,11 +7,16 @@ class RoutesConstants {
   static const passwordChange = "/password_change";
   static const home = "/home";
   static const restaurant_register = "/restaurante/register";
-  static const restaurant_details = "/restaurante/details";
+  static const restaurant_details = "/restaurante/details/:id";
   static const products = "/products";
   static const productAdd = "/products/add";
-  static const productDetail = "/product/details";
+  static const productDetail = "/product/detail/:id";
+  static const productEdit = "/product/edit/:id";
+  static const categories = "/categories";
+  static const categoryAdd = "/category/add";
+  static const categoryDetail = "/category/detail/:id";
+  static const categoryEdit = "/category/edit/:id";
   static const tables = "/tables";
   static const tableAdd = "/table/add";
-  static const tableDetail = "/table/details";
+  static const tableDetail = "/table/details/:id";
 }

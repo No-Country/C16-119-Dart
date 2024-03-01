@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/auth/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 
@@ -40,8 +41,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             const SizedBox(height: 20),
             ButtonCustomer(
-              text: 'Modulo restaurante',
-              press: () => (context.push(RoutesConstants.restaurant_details)),
+              text: 'Modulo categorias',
+              press: () => (context.push(RoutesConstants.categories)),
             ),
             const SizedBox(height: 20),
             ButtonCustomer(
