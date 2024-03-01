@@ -5,15 +5,10 @@ class MsgSnackBar {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
         backgroundColor: color,
         content: Text(msg),
       ),
     );
   }
 }
-// SnackBar(
-//       duration: const Duration(seconds: 2),
-//       backgroundColor: palette.main,
-//       content: const Text('Producto agregado'),
-//     );
