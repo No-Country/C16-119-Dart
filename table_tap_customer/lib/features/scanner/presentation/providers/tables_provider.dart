@@ -1,4 +1,3 @@
-import 'package:log_print/log_print.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
 import 'package:table_tap_customer/features/scanner/infrastructure/infrastructure.dart';

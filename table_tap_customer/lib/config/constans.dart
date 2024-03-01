@@ -1,7 +1,7 @@
 class DbNames {
   static const products = "products";
   static const users = "users";
-  static const orders = "ordes";
+  static const orders = "orders";
   static const tables = "tables";
 }
 

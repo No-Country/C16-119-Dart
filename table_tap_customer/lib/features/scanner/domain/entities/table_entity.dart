@@ -18,8 +18,13 @@
 // }
 
 class Table {
-  String code;
+  String? code;
   bool available;
+  int? number;
 
-  Table({required this.code, this.available = true});
+  Table({
+    required this.code,
+    this.available = false,
+    required this.number,
+  });
 }

@@ -5,5 +5,7 @@ abstract class ProductsDatasource {
 
   Future<Product> getProductById(String id);
 
-  Future<Product> createUpdateProduct(Map<String, dynamic> productLike);
+  Future<Product> createProduct(Map<String, dynamic> productLike);
+
+  Future<Product> updateProduct(Map<String, dynamic> productLike, String idProduct);
 }

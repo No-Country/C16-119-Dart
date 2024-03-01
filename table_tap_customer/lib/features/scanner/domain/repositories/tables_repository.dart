@@ -5,7 +5,7 @@ abstract class TablesRepository {
     bool available = true,
   });
 
-  Future<bool> existTable();
+  Future<Table> getTable();
 
   Future<bool> changeStatusTable(String idTable,  bool status);
 }

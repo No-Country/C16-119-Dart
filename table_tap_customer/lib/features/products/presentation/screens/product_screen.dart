@@ -5,6 +5,7 @@ import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
+import 'package:table_tap_customer/features/shared/shared.dart';
 
 class ProductScreen extends ConsumerWidget {
   const ProductScreen({super.key});
@@ -12,17 +13,11 @@ class ProductScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     ThemeColors palette = ThemeColors.palette();
-    final snackBar = SnackBar(
-      duration: const Duration(seconds: 2),
-      backgroundColor: palette.main,
-      content: const Text('Producto agregado'),
-    );
     return Scaffold(
       body: const _ProductView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          MsgSnackBar.show(context, "Producto agregado", palette.main);
           ref
               .read(orderSelectedProvider.notifier)
               .setAddDish(ref.watch(productSelectedProvider).dish);

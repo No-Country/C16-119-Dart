@@ -5,6 +5,7 @@ import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/orders/domain/domain.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
+import 'package:table_tap_customer/features/shared/shared.dart';
 
 class OrderScreen extends ConsumerStatefulWidget {
   const OrderScreen({super.key});
@@ -25,23 +26,6 @@ class OrderScreenState extends ConsumerState<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            "Mesa",
-            style: TextStyle(color: palette.primaryText),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Icon(
-                Icons.receipt,
-                color: palette.secondaryText,
-              ),
-            )
-          ]),
-      floatingActionButton: const Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-      ),
       body: _OrderView(),
     );
   }
@@ -56,6 +40,8 @@ class _OrderView extends ConsumerWidget {
     Order order = ref.watch(orderSelectedProvider);
     final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
     final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
+    final resetOrder = ref.read(orderSelectedProvider.notifier).resetOrder;
+    final addOrder = ref.read(orderSelectedProvider.notifier).addOrder;
     final removeAmountDish =
         ref.read(orderSelectedProvider.notifier).setRemoveDish;
     return Padding(
@@ -194,7 +180,85 @@ class _OrderView extends ConsumerWidget {
                     );
                   },
                 ),
-              )
+              ),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // <-- SEE HERE
+                          title: const Text('Realizar Orden'),
+                          content: const SingleChildScrollView(
+                            child: ListBody(
+                              children: <Widget>[
+                                Text('Quieres confirmar la orden?'),
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      palette.warning)),
+                              child: const Text(
+                                'No',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                addOrder();
+                                resetOrder();
+                                Navigator.of(context).pop();
+                                MsgSnackBar.show(
+                                    context, "Orden realizada", palette.main);
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(palette.main)),
+                              child: const Text(
+                                'Si',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: palette.main,
+                      borderRadius: BorderRadius.circular(10)),
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Pagar",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 17,
+                            )),
+                        Text("\$ ${order.priceTotal}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 17,
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
             ]),
     );
   }

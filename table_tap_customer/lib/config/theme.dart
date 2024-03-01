@@ -46,7 +46,8 @@ class AppTheme {
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: palette.main,
-          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ));
   }
 }
@@ -62,6 +63,7 @@ class ThemeColors {
   final Color border;
   final Color bg;
   final Color form;
+  final Color white;
   ThemeColors({
     this.main = const Color(0xff1FCC79),
     this.light = const Color(0xffdbfdec),
@@ -73,6 +75,7 @@ class ThemeColors {
     this.border = const Color(0xffD0DBEA),
     this.bg = const Color(0xffffffff),
     this.form = const Color(0xffF4F5F7),
+    this.white = Colors.white,
   });
 
   static ThemeColors palette() => ThemeColors();

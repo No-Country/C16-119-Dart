@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_tap_customer/features/dishes/domain/entities/dish_entity.dart';
+import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
-import 'package:table_tap_customer/features/products/infrastructure/datasources/tables_datasource_impl.dart';
+import 'package:table_tap_customer/features/products/infrastructure/infrastructure.dart';
 
 part 'products_provider.g.dart';
 
@@ -32,7 +32,7 @@ class ProductsList extends _$ProductsList {
                 "cebolla",
                 "carne"
               ],
-              price: 28768,
+              price: 20,
             ),
             likes: 487,
             time: 34),
@@ -44,11 +44,11 @@ class ProductsList extends _$ProductsList {
                 "semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie",
             likes: 162,
             dish: Dish(
-              idDish: "2_CARNES 2",
-              name: "CARNES 2",
+              idDish: "2_Bebidas 2",
+              name: "Bebidas 2",
               photos: [
-                "https://images.pexels.com/photos/15388082/pexels-photo-15388082/free-photo-of-grilled-shish-kebab-with-tomato-pearl-barley-and-vegetables-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/15344189/pexels-photo-15344189/free-photo-of-burger-in-a-portuguese-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/1089930/pexels-photo-1089930.jpeg?auto=compress&cs=tinysrgb&w=600"
               ],
               ingredients: [
                 "arroz",
@@ -58,7 +58,7 @@ class ProductsList extends _$ProductsList {
                 "carne",
                 "salsas"
               ],
-              price: 14625,
+              price: 10,
             ),
             time: 21),
         Product(
@@ -69,14 +69,14 @@ class ProductsList extends _$ProductsList {
                 "egetvarius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem",
             likes: 427,
             dish: Dish(
-              idDish: "3_CARNES 3",
-              name: "CARNES 3",
+              idDish: "3_Postres 3",
+              name: "Postres 3",
               photos: [
-                "https://images.pexels.com/photos/15434289/pexels-photo-15434289/free-photo-of-tacos-served-in-a-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/20205482/pexels-photo-20205482/free-photo-of-a-burger-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/15388082/pexels-photo-15388082/free-photo-of-grilled-shish-kebab-with-tomato-pearl-barley-and-vegetables-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "https://images.pexels.com/photos/3992134/pexels-photo-3992134.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/4110541/pexels-photo-4110541.jpeg?auto=compress&cs=tinysrgb&w=600"
               ],
-              price: 15355,
+              price: 5,
               ingredients: ["huevos", "verduras", "papa", "salsas", "carne"],
             ),
             time: 16),
@@ -90,7 +90,6 @@ class ProductsList extends _$ProductsList {
               idDish: "4_CARNES 4",
               name: "CARNES 4",
               photos: [
-                "https://images.pexels.com/photos/15439289/pexels-photo-15439289/free-photo-of-top-view-of-a-bowl-of-soup-with-meat.jpeg?auto=compress&cs=tinysrgb&w=600",
                 "https://images.pexels.com/photos/15433931/pexels-photo-15433931/free-photo-of-sushi-served-in-a-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600"
               ],
               ingredients: [
@@ -101,7 +100,7 @@ class ProductsList extends _$ProductsList {
                 "cebolla",
                 "carne"
               ],
-              price: 28768,
+              price: 8,
             ),
             likes: 487,
             time: 34),
@@ -113,11 +112,11 @@ class ProductsList extends _$ProductsList {
                 "semper auctor. Mauris vel turpis. Aliquam adipiscing lobortis risus. In mi pede, nonummy ut, molestie",
             likes: 162,
             dish: Dish(
-              idDish: "5_CARNES 5",
-              name: "CARNES 5",
+              idDish: "5_Bebidas 5",
+              name: "Bebidas 5",
               photos: [
-                "https://images.pexels.com/photos/15388082/pexels-photo-15388082/free-photo-of-grilled-shish-kebab-with-tomato-pearl-barley-and-vegetables-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/15344189/pexels-photo-15344189/free-photo-of-burger-in-a-portuguese-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "https://images.pexels.com/photos/110472/pexels-photo-110472.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/2789328/pexels-photo-2789328.jpeg?auto=compress&cs=tinysrgb&w=600"
               ],
               ingredients: [
                 "arroz",
@@ -127,7 +126,7 @@ class ProductsList extends _$ProductsList {
                 "carne",
                 "salsas"
               ],
-              price: 14625,
+              price: 12,
             ),
             time: 21),
         Product(
@@ -138,14 +137,14 @@ class ProductsList extends _$ProductsList {
                 "egetvarius ultrices, mauris ipsum porta elit, a feugiat tellus lorem eu metus. In lorem. Donec elementum, lorem",
             likes: 427,
             dish: Dish(
-              idDish: "6_CARNES 6",
-              name: "CARNES 6",
+              idDish: "6_Postres 6",
+              name: "Postres 6",
               photos: [
-                "https://images.pexels.com/photos/15434289/pexels-photo-15434289/free-photo-of-tacos-served-in-a-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/20205482/pexels-photo-20205482/free-photo-of-a-burger-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600",
-                "https://images.pexels.com/photos/15388082/pexels-photo-15388082/free-photo-of-grilled-shish-kebab-with-tomato-pearl-barley-and-vegetables-on-a-plate.jpeg?auto=compress&cs=tinysrgb&w=600"
+                "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg?auto=compress&cs=tinysrgb&w=600",
+                "https://images.pexels.com/photos/205961/pexels-photo-205961.jpeg?auto=compress&cs=tinysrgb&w=600"
               ],
-              price: 15355,
+              price: 15,
               ingredients: ["huevos", "verduras", "papa", "salsas", "carne"],
             ),
             time: 16),
@@ -181,12 +180,10 @@ class CategoryProductsFiltered extends _$CategoryProductsFiltered {
   CategoryProducts build() => CategoryProducts.todos;
 
   void setCategoryProductsFiltered(CategoryProducts newFilter) {
-    print(newFilter.toString());
     state = newFilter;
   }
 }
 
-@riverpod
 @riverpod
 List<Product> productsListFiltered(ProductsListFilteredRef ref) {
   final currentFilter = ref.watch(categoryProductsFilteredProvider);

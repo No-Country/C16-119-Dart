@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_tap_customer/features/dishes/domain/entities/dish_entity.dart';
+import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 
 part 'product_provider.g.dart';
@@ -8,15 +8,15 @@ part 'product_provider.g.dart';
 class ProductSelected extends _$ProductSelected {
   @override
   Product build() => Product(
-      idProduct: "1",
-      time: 15,
-      likes: 100,
+      idProduct: "",
+      time: 0,
+      likes: 0,
       category: "",
       description: "",
-      available: true,
+      available: false,
       dish: Dish(
-        idDish: "1",
-        name: "Algo fallo",
+        idDish: "",
+        name: "",
         photos: [],
         price: 0,
       ));
