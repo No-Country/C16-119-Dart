@@ -19,4 +19,7 @@ class RoutesConstants {
   static const tables = "/tables";
   static const tableAdd = "/table/add";
   static const tableDetail = "/table/details/:id";
+  static const orders = "/orders";
+  static const orderDetail = "/order/detail/:id";
+  static const orderEdit = "/order/edit/:id";
 }

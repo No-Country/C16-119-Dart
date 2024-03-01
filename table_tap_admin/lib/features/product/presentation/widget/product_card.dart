@@ -1,11 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/shared/widgets/text_status.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   final ProductModel product;
 
   const ProductCard({
@@ -14,64 +16,70 @@ class ProductCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return Card(
       elevation: 2,
       shadowColor: colorPrincipal,
       color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                Row(
+      child: InkWell(
+        onTap: () {
+          context.push(
+            RoutesConstants.productDetail,
+            extra: {"id": product.id},
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
                   children: [
-                    Image.asset(
-                      'assets/images/splash.png',
-                      height: 100,
+                    SizedBox(
                       width: 100,
+                      height: 100,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: CachedNetworkImage(
+                          imageUrl: product.image!.first,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                             const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                           const Icon(Icons.error),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           product.name,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(context).textTheme.headline6,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 8),
                         Text(
                           "${product.price}",
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
+                        const SizedBox(height: 8),
                         Text(
-                          product.categoryId,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          product.category!,
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
+                        const SizedBox(height: 8),
                         TextStatusCustomer(status: product.available),
                       ],
-                    )
+                    ),
                   ],
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: IconButton(
-                onPressed: () {
-                  context.push(
-                    RoutesConstants.productDetail,
-                    extra: {"id": product.id},
-                  );
-                },
-                icon: const Icon(
-                  Icons.search_sharp,
-                  size: 40,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 // Proveedor para el repositorio
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
+import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/domain/repositories/category_repository.dart';
 import 'package:table_tap_admin/features/product/domain/repositories/product_repository.dart';
 import 'package:table_tap_admin/features/product/infraestructure/datasources/category_datasource_impl.dart';
@@ -38,3 +40,15 @@ final categoriesProvider = StateProvider(
     ),
   ),
 );
+
+// futures
+final productsFutureProvider = FutureProvider<List<ProductModel>>((ref) async {
+  final tableRepository = ref.read(productRepositoryProvider);
+  return await tableRepository.getProducts();
+});
+
+
+final categoiesFutureProvider = FutureProvider<List<CategoryModel>>((ref) async {
+  final categoryRepository = ref.read(categoryRepositoryProvider);
+  return await categoryRepository.getCategories();
+});

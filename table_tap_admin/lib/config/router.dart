@@ -7,6 +7,9 @@ import 'package:table_tap_admin/features/auth/presentation/screen/password/verif
 import 'package:table_tap_admin/features/auth/presentation/screen/register/register_screen.dart';
 import 'package:table_tap_admin/features/auth/presentation/screen/splash/splash_screen.dart';
 import 'package:table_tap_admin/features/home/presentation/screen/home_screen.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/order/order_details_screen.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/order/order_edit_screen.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/order/order_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_edit_modal.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_details_screen.dart';
@@ -98,13 +101,33 @@ final goRouterProvider = GoRouter(
       path: RoutesConstants.tableDetail,
       builder: (context, state) {
         final Object? extra = state.extra;
-        final String id = (extra as Map<String, dynamic>)['id'] ?? '';
-        return const TableDetailsScreen();
+        final String tableId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return TableDetailsScreen(tableId: tableId);
       },
     ),
     GoRoute(
       path: RoutesConstants.tableAdd,
       builder: (context, state) => const TableRegisterScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.orders,
+      builder: (context, state) => OrderScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.orderDetail,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String orderId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return OrderDetailScreen(orderId: orderId);
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.orderEdit,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String orderId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return OrderEditScreen(order: orderId);
+      },
     ),
   ],
 );

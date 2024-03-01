@@ -94,12 +94,17 @@ class _RegisterResScreenState extends State<RegisterResScreen> {
             validator: (value) => validate.validateIsTextEmpity(value),
           ),
           const SizedBox(height: 15),
-          SelectCustomer(
+       
+       /**
+           SelectCustomer(
             icono: Icons.tiktok,
             options: customers,
             initialValue: 'Seleccione',
             onChanged: onChanged,
           ),
+       * 
+
+        */
           isLoading ? const LoadingCustomer() : Container(),
         ],
       ),

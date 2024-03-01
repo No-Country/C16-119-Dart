@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:table_tap_admin/features/product/domain/datasources/product_datasource.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/domain/repositories/product_repository.dart';
@@ -8,8 +10,8 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this.productDatasource});
 
   @override
-  Future<ProductModel> createProduct(ProductModel product) {
-    return productDatasource.createProduct(product);
+  Future<ProductModel> createProduct(ProductModel product, List<File> image) {
+    return productDatasource.createProduct(product, image);
   }
 
   @override
@@ -28,7 +30,8 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<ProductModel?> updateProduct(ProductModel product, String id) {
-    return productDatasource.updateProduct(product, id);
+  Future<ProductModel?> updateProduct(
+      ProductModel product, String id, List<File> image) {
+    return productDatasource.updateProduct(product, id, image);
   }
 }

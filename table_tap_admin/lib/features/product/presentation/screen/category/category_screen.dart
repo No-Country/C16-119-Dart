@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:table_tap_admin/config/theme.dart';
+import 'package:table_tap_admin/config/config.dart';
+import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_add_modal.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 
-import '../../../domain/models/category_model.dart';
 import '../../riverpod/provider.dart';
 import '../../widget/category_card.dart';
 
@@ -16,9 +16,6 @@ class CategoryScreen extends ConsumerStatefulWidget {
 }
 
 class _CategoryScreenState extends ConsumerState<CategoryScreen> {
-  final List<CategoryModel> listCategory = [];
-  bool loading = true;
-
   @override
   void initState() {
     super.initState();
@@ -27,39 +24,50 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
 
   handleShowCategory() async {
     final categoryNotifier = ref.read(categoriesProvider.notifier);
-    final category = await categoryNotifier.state.getCateroryAll();
-
-    setState(() {
-      listCategory.clear();
-      listCategory.addAll(category);
-      loading = false;
-    });
+    await categoryNotifier.state.getCateroryAll();
   }
 
   @override
   Widget build(BuildContext context) {
-    handleShowCategory();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Categorias'),
+        title: const Text('Mis Categorías'),
       ),
-      body: SafeArea(
-        child: loading
-            ? const LoadingCustomer()
-            : listCategory.isEmpty
-                ? const Text("Lista de categoria vacia")
-                : buildList(listCategory),
+      body: Consumer(
+        builder: (context, ref, child) {
+          final AsyncValue<List<CategoryModel>> categoryState =
+              ref.watch(categoiesFutureProvider);
+
+          return categoryState.when(
+            loading: () => const LoadingCustomer(),
+            error: (error, stackTrace) => Center(
+              child: Text("Error al cargar las categorías: $error"),
+            ),
+            data: (categories) {
+              return categories.isEmpty
+                  ?const Center(
+                      child:  Text("Lista de categorías vacía"),
+                    )
+                  : ListView.builder(
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        final category = categories[index];
+                        return CategoryCard(category: category);
+                      },
+                    );
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: colorSecondary,
+        onPressed: () {
+          _showAddCategoryModal(context);
+        },
         child: const Icon(
           Icons.add,
           color: colorPrincipal,
         ),
-        onPressed: () {
-          _showAddCategoryModal(context);
-        },
       ),
     );
   }
@@ -75,67 +83,6 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: const CategoryAddModal(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildList(List<CategoryModel?> categoriesList) {
-    return ListView.builder(
-      itemCount: categoriesList.length,
-      itemBuilder: (context, index) {
-        final category = categoriesList[index];
-        return Dismissible(
-          key: Key(category!.id!),
-          confirmDismiss: (direction) async {
-            // Muestra un diálogo de confirmación antes de eliminar
-            return await showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text("Confirmar eliminación"),
-                content: const Text(
-                    "¿Estás seguro de que quieres eliminar esta categoria?"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text("Cancelar"),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text("Eliminar"),
-                  ),
-                ],
-              ),
-            );
-          },
-          onDismissed: (_) async {
-            final categoryNotifier = ref.read(categoriesProvider.notifier);
-            await categoryNotifier.state.deleteCategory(category.id!);
-          },
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerRight,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "Eliminando categoria",
-                    style: TextStyle(color: colorPrincipal, fontSize: 25),
-                  ),
-                ),
-                Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                  size: 50,
-                ),
-              ],
-            ),
-          ),
-          child: ListTile(
-            title: CategoryCard(category: category),
           ),
         );
       },

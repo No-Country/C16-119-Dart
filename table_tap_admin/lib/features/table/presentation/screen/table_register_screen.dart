@@ -4,7 +4,7 @@ import 'package:table_tap_admin/config/validate/validations.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
 import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
-import 'package:table_tap_admin/features/table/presentation/riverpod/table_provider.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/table/presentation/widget/qr_details_widget.dart';
 
 class TableRegisterScreen extends ConsumerStatefulWidget {

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_tap_admin/config/functions/message_customer.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
+import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/widget/ingredients_customer.dart';
@@ -29,18 +32,35 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _categoryController = TextEditingController();
+  final _timeController = TextEditingController();
   bool _active = false;
   bool _prepared = false;
-  final int _selectedIndex = -1;
   final List<String> _listIngredients = [];
-
-  final List<String> _category = [
-    'seleccione',
-    'Categoría 1',
-    'Categoría 2',
-    'Categoría 3'
-  ];
+  final List<CategoryModel> _listCategory = [];
+  String initialImageUrl = "";
   bool isLoading = false;
+  File? _image;
+
+  void handleImageChanged(File imageFile) {
+    setState(() {
+      _image = imageFile;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handleListcategories();
+  }
+
+  handleListcategories() async {
+    final categoryNotifier = ref.read(categoriesProvider.notifier);
+    final result = await categoryNotifier.state.getCateroryAll();
+    setState(() {
+      _listCategory.clear();
+      _listCategory.addAll(result);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +97,10 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           buildSpace(),
-          ImageCustom(),
+          ImageCustom(
+            initialImageUrl: initialImageUrl,
+            onImageChanged: handleImageChanged,
+          ),
           buildSpace(),
           TextFieldCustom(
             text: "Nombre",
@@ -98,8 +121,8 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
           const Text("Categoria"),
           const SizedBox(height: 2),
           SelectCustomer(
-            options: _category,
-            initialValue: 'seleccione',
+            options: _listCategory,
+            initialValue: initialImageUrl,
             onChanged: (value) {
               _categoryController.text = value!;
             },
@@ -111,6 +134,14 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             controller: _priceController,
             keyboardType: TextInputType.number,
             validator: (value) => _validate.validateLastName(value),
+          ),
+          buildSpace(),
+          TextFieldCustom(
+            text: "Tiempo",
+            hintText: "Ingrese tiempo",
+            controller: _timeController,
+            keyboardType: TextInputType.number,
+            validator: (value) => _validate.validateName(value),
           ),
           buildSpace(),
           SwichCustomer(
@@ -151,63 +182,67 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
     return const SizedBox(height: 20);
   }
 
- handleSubmit() async {
-  if (_formKey.currentState!.validate()) {
-    setState(() {
-      isLoading = true;
-    });
-    // Espera para simular una solicitud al servidor
-    await Future.delayed(const Duration(seconds: 5));
+  handleCleanText() {
+    // Limpiar los campos del formulario
+    _nameController.clear();
+    _descriptionController.clear();
+    _priceController.clear();
+    _timeController.clear();
+    _categoryController.text = "seleccione";
+    _active = false;
+    _prepared = false;
+    _listIngredients.clear();
+    initialImageUrl = "";
+    _image = null;
+  }
 
-    // Obtener los valores del formulario
-    String name = _nameController.text;
-    String description = _descriptionController.text;
-    double price = double.parse(_priceController.text);
-    String category = _categoryController.text;
-    bool available = _active;
-    bool needsPreparation = _prepared;
-    List<String> ingredients = _listIngredients;
-
-    try {
-      // Crear una instancia de ProductModel
-      ProductModel product = ProductModel(
-        name: name,
-        description: description,
-        price: price,
-        available: available,
-        categoryId: category,
-        prepared: needsPreparation,
-        image: '',
-        ingredients: ingredients,
-      );
-
-      // Llamar al método addProduct del ProductsNotifier
-      await ref.read(productsProvider).addProduct(product);
-
-      // Limpiar los campos del formulario
-      _nameController.clear();
-      _descriptionController.clear();
-      _priceController.clear();
-      _categoryController.text = 'seleccione'; // Restablecer la selección de categoría
-      _active = false;
-      _prepared = false;
-      _listIngredients.clear();
-      setState(() {});
-
-      // Mostrar un mensaje de éxito
-      MessageSnackBar.show(context, "Producto creado exitosamente");
-    } catch (error) {
-      // Mostrar un mensaje de error
-      MessageSnackBar.show(
-          context, "Error al crear el producto: ${error.toString()}");
-    } finally {
+  handleSubmit() async {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        isLoading = false;
+        isLoading = true;
       });
+
+      // Obtener los valores del formulario
+      String name = _nameController.text;
+      String description = _descriptionController.text;
+      double price = double.parse(_priceController.text);
+      String category = _categoryController.text;
+      bool available = _active;
+      bool needsPreparation = _prepared;
+      List<String> ingredients = _listIngredients;
+      List<File> image = [_image!];
+
+      try {
+        // Crear una instancia de ProductModel
+        ProductModel product = ProductModel(
+          name: name,
+          description: description,
+          price: price,
+          available: available,
+          category: category,
+          prepared: needsPreparation,
+          ingredients: ingredients,
+        );
+
+        print("Categoria es ${_categoryController.text}");
+        // Llamar al método addProduct del ProductsNotifier
+
+        await ref.read(productsProvider).addProduct(product, image);
+        handleCleanText();
+        setState(() {
+          isLoading = false;
+        });
+        // Mostrar un mensaje de éxito
+        MessageSnackBar.show(context, "Producto creado exitosamente");
+      } catch (error) {
+        // Mostrar un mensaje de error
+        MessageSnackBar.show(
+            context, "Error al crear el producto: ${error.toString()}");
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 }
-
-
-
- }
