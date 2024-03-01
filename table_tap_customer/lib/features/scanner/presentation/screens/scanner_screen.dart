@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:log_print/log_print.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/scanner/infrastructure/infrastructure.dart';
+import 'package:table_tap_customer/features/scanner/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/shared/shared.dart';
 
-class ScannerScreen extends StatefulWidget {
+class ScannerScreen extends ConsumerStatefulWidget {
   const ScannerScreen({super.key});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();
+  ScannerScreenState createState() => ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
+class ScannerScreenState extends ConsumerState<ScannerScreen> {
   MobileScannerController cameraController = MobileScannerController();
 
-  bool screenOpened = false;
+  bool hasTable = false;
 
   bool _existQr = false;
   final table = TablesDatasourceImpl();
@@ -31,7 +34,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   void existTable() async {
-    table.existTable();
+    table.getTable();
   }
 
   void resetQr() async {
@@ -44,7 +47,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   void initState() {
     getQr();
-    existTable();
     super.initState();
   }
 
@@ -57,27 +59,34 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     void foundBarcode(BarcodeCapture barcode) async {
+      // if (ref.watch(tableSelectedProvider).available) return;
+
       String qr = barcode.barcodes[0].rawValue ?? "";
-      if (!screenOpened || qr.isNotEmpty) {
+      if (!hasTable && qr.isNotEmpty) {
+        hasTable = true;
+
         try {
-          // screenOpened = true;
           final SharedPreferences prefs = await _prefs;
 
           prefs.setString("qr", qr);
-          bool tableavailable = await table.existTable();
 
+          final tab =
+              await ref.read(tableSelectedProvider.notifier).loadTable();
+          bool tableavailable = tab.available;
           if (!tableavailable) {
-            MsgSnackBar.show(context, "Mesa no disponible", palette.warning);
+            // MsgSnackBar.show(context, "Mesa ocupada", palette.warning);
             return;
           }
           final idTable = prefs.getString("idTable");
           _existQr = true;
-          table.changeStatusTable(idTable ?? "", false);
+          ref
+              .read(tableSelectedProvider.notifier)
+              .changeStatusTable(idTable ?? "", false);
           context.go(RoutesNames.orders);
           MsgSnackBar.show(context, "Mesa disponible", palette.main);
           Future.delayed(
             const Duration(seconds: 2),
-            () => screenOpened = false,
+            () => hasTable = false,
           );
         } catch (e) {
           print(e);
@@ -85,7 +94,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       } else {
         Future.delayed(
           const Duration(seconds: 2),
-          () => screenOpened = false,
+          () => hasTable = false,
         );
       }
     }
@@ -149,13 +158,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ],
                 ),
               ),
-              FloatingActionButton(
-                  heroTag: "resetQr",
-                  onPressed: resetQr,
-                  child: Icon(
-                    Icons.delete,
-                    color: palette.light,
-                  ))
+              // FloatingActionButton(
+              //     heroTag: "resetQr",
+              //     onPressed: resetQr,
+              //     child: Icon(
+              //       Icons.delete,
+              //       color: palette.light,
+              //     ))
             ],
           )
         ]),

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:log_print/log_print.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
+import 'package:table_tap_customer/features/scanner/infrastructure/infrastructure.dart';
 
 class TablesDatasourceImpl extends TablesDatasource {
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -30,19 +30,24 @@ class TablesDatasourceImpl extends TablesDatasource {
   }
 
   @override
-  Future<bool> existTable() async {
+  Future<Table> getTable() async {
     final SharedPreferences prefs = await _prefs;
     final res = prefs.getString("qr");
+    final idTable = prefs.getString("idTable");
+
     try {
       final userDocRef = db.collection(DbNames.tables);
       final queryTables = await userDocRef.where("id", isEqualTo: res).get();
       final existTable = queryTables.docs[0].data();
       final idDoc = queryTables.docs[0].id;
       prefs.setString("idTable", idDoc ?? "");
-      return existTable["available"] ?? false;
+      if (idTable!.isNotEmpty && (existTable["available"] ?? false)) {
+        changeStatusTable(idTable, true);
+      }
+      return TableMapper.jsonToEntity(existTable);
     } catch (e) {
       print(e);
-      return false;
+      return Table(code: "", number: 0);
     }
   }
 

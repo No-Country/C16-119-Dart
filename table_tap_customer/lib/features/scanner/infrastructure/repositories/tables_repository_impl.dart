@@ -11,8 +11,8 @@ class TablesRepositoryImpl extends TablesRepository {
   }
 
   @override
-  Future<bool> existTable() {
-    return datasource.existTable();
+  Future<Table> getTable() {
+    return datasource.getTable();
   }
 
   @override

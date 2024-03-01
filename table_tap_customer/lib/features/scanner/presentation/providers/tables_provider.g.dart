@@ -6,7 +6,7 @@ part of 'tables_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tablesListHash() => r'd395462ab3b556929f5e31b4d8e82b8d983453a0';
+String _$tablesListHash() => r'23954c8d8259c87761d9bd11dced6c31d8b00748';
 
 /// See also [TablesList].
 @ProviderFor(TablesList)
