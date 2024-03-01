@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
-import '../mappers/product_mapper.dart';
+import 'package:table_tap_customer/features/products/infrastructure/infrastructure.dart';
 
 class ProductsDatasourceImpl extends ProductsDatasource {
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -70,5 +70,17 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     // } catch (e) {
     //   throw Exception();
     // }
+  }
+  
+  @override
+  Future<Product> createProduct(Map<String, dynamic> productLike) {
+    // TODO: implement createProduct
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Product> updateProduct(Map<String, dynamic> productLike, String idProduct) {
+    // TODO: implement updateProduct
+    throw UnimplementedError();
   }
 }

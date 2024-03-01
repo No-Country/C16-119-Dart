@@ -7,7 +7,8 @@ import 'package:table_tap_customer/features/orders/orders.dart';
 import 'package:table_tap_customer/features/orders/presentation/providers/providers.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/presentation/providers/providers.dart';
-import 'package:table_tap_customer/features/scanner/presentation/providers/tables_provider.dart';
+import 'package:table_tap_customer/features/scanner/presentation/providers/providers.dart';
+import 'package:table_tap_customer/features/shared/shared.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
   const ProductsScreen({super.key});
@@ -22,49 +23,27 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(orderSelectedProvider.notifier).getOrderLocal();
+    ref.read(tableSelectedProvider.notifier).getTableLocal();
     // ref.read(productsListProvider.notifier).loadNextPage();
-  //  ref.read(tablesListProvider.notifier).loadNextPage();
   }
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
-    final loadNextPage = ref.read(productsListProvider.notifier).loadNextPage;
-    final loadNextPage2 = ref.read(tablesListProvider.notifier).loadNextPage;
-    CollectionReference collectionReferenceProducts =
-        db.collection(DbNames.products);
-    save() {
-      collectionReferenceProducts.add({
-        "available": false,
-        "category": "Fuertes",
-        "description":
-            "dolor sit amet, consectetuer adipiscing elit. Curabitur sed tortor. Integer aliquam adipiscing lacus. Ut nec urna et arcu imperdiet",
-        "ingredients": [
-          "queso",
-          "papa",
-          "huevos",
-          "salsas",
-          "cebolla",
-          "carne"
-        ],
-        "likes": 487,
-        "name": "CARNES",
-        "photos": [
-          "https://images.pexels.com/photos/15439289/pexels-photo-15439289/free-photo-of-top-view-of-a-bowl-of-soup-with-meat.jpeg?auto=compress&cs=tinysrgb&w=600",
-          "https://images.pexels.com/photos/15433931/pexels-photo-15433931/free-photo-of-sushi-served-in-a-restaurant.jpeg?auto=compress&cs=tinysrgb&w=600"
-        ],
-        "price": 28768,
-        "time": 34
-      });
-    }
+    final table = ref.watch(tableSelectedProvider);
 
     ThemeColors palette = ThemeColors.palette();
 
     void onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
+      if (index == 1) {
+        context.push(RoutesNames.scanner);
+      } else {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
     }
 
     List<Widget> widgetOptions = [
@@ -74,12 +53,20 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
     ];
 
     return Scaffold(
-      // appBar: AppBar(title: const Text("Lsita de productos")),
-
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: loadNextPage,
-      //   child: const Icon(Icons.refresh),
-      // ),
+      appBar: AppBar(
+          title: Text(
+            "Mesa ${table.number}",
+            style: TextStyle(color: palette.primaryText),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Icon(
+                Icons.receipt,
+                color: palette.secondaryText,
+              ),
+            )
+          ]),
       body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
@@ -119,14 +106,10 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
 }
 
 class _ProductsList extends ConsumerWidget {
+  @override
   Widget build(BuildContext contex, WidgetRef ref) {
     List<Product> productsList = ref.watch(productsListFilteredProvider);
     ThemeColors palette = ThemeColors.palette();
-    final snackBar = SnackBar(
-      duration: const Duration(seconds: 2),
-      backgroundColor: palette.main,
-      content: const Text('Producto agregado'),
-    );
     final selectedCategory = ref.watch(categoryProductsFilteredProvider);
     final setAddDish = ref.read(orderSelectedProvider.notifier).setAddDish;
     final setProduct = ref.read(productSelectedProvider.notifier).setProduct;
@@ -134,14 +117,11 @@ class _ProductsList extends ConsumerWidget {
         .read(categoryProductsFilteredProvider.notifier)
         .setCategoryProductsFiltered;
     return Padding(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.only(right: 25, left: 25, bottom: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text("Categorías", style: ThemeTextStyle().h1),
-          ),
+          Text("Categorías", style: ThemeTextStyle().h1),
           SegmentedButton(
               showSelectedIcon: false,
               style: ButtonStyle(
@@ -194,8 +174,8 @@ class _ProductsList extends ConsumerWidget {
               selected: {selectedCategory},
               onSelectionChanged: (value) =>
                   setCategoryProductsFiltered(value.first)),
-          SizedBox(
-            height: 10,
+          const SizedBox(
+            height: 5,
           ),
           Expanded(
             child: GridView.builder(
@@ -248,10 +228,9 @@ class _ProductsList extends ConsumerWidget {
                             child: IconButton(
                               // heroTag: "addDish",
                               onPressed: () {
+                                MsgSnackBar.show(
+                                    context, "Producto agregado", palette.main);
                                 setAddDish(product.dish);
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
                               },
                               icon: const Icon(
                                 Icons.add,
@@ -262,7 +241,7 @@ class _ProductsList extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Column(
