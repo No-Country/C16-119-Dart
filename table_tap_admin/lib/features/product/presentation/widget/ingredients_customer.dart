@@ -5,8 +5,13 @@ typedef IngredientListCallback = void Function(List<String>);
 
 class IngredientsCustomer extends StatefulWidget {
   final IngredientListCallback? onIngredientsChanged;
+  final List<String>? listaIngredientes;
 
-  const IngredientsCustomer({Key? key, this.onIngredientsChanged}) : super(key: key);
+  const IngredientsCustomer({
+    Key? key,
+    this.onIngredientsChanged,
+    this.listaIngredientes,
+  }) : super(key: key);
 
   @override
   State<IngredientsCustomer> createState() => _IngredientsCustomerState();
@@ -15,6 +20,14 @@ class IngredientsCustomer extends StatefulWidget {
 class _IngredientsCustomerState extends State<IngredientsCustomer> {
   final List<String> listIngredients = [];
   final _textFormFieldController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.listaIngredientes != null) {
+      listIngredients.addAll(widget.listaIngredientes!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +41,8 @@ class _IngredientsCustomerState extends State<IngredientsCustomer> {
                 setState(() {
                   listIngredients.add(_textFormFieldController.text);
                   _textFormFieldController.clear();
-                  widget.onIngredientsChanged?.call(listIngredients); // Llama a la función de devolución de llamada
+                  widget.onIngredientsChanged?.call(
+                      listIngredients); // Llama a la función de devolución de llamada
                 });
               },
             ),
@@ -60,7 +74,8 @@ class _IngredientsCustomerState extends State<IngredientsCustomer> {
               onDismissed: (direction) {
                 setState(() {
                   listIngredients.removeAt(index);
-                  widget.onIngredientsChanged?.call(listIngredients); // Llama a la función de devolución de llamada
+                  widget.onIngredientsChanged?.call(
+                      listIngredients); // Llama a la función de devolución de llamada
                 });
               },
               child: ListTile(

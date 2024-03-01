@@ -2,17 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/config.dart';
+import 'package:table_tap_admin/config/constants/routes_constant.dart';
+import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
+import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 
 class ProductDetailsScreen extends ConsumerWidget {
-  const ProductDetailsScreen({super.key});
+  final String productIds;
+
+  const ProductDetailsScreen({super.key, required this.productIds});
 
   @override
   Widget build(BuildContext context, ref) {
+    final productState = ref.watch(productsProvider);
     return Scaffold(
-      appBar: AppBar(),
-      body: const _ProductView(),
+      appBar: AppBar(title: Text(productIds)),
+      body: productState.state.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text('Error: $error')),
+        data: (products) {
+          final product =
+              products.firstWhere((product) => product.id == productIds);
+          return _ProductView(product: product);
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push(
+            RoutesConstants.productEdit,
+            extra: {"id": productIds},
+          );
+        },
         backgroundColor: colorSecondary,
         child: const Icon(
           Icons.edit,
@@ -25,25 +44,33 @@ class ProductDetailsScreen extends ConsumerWidget {
 }
 
 class _ProductView extends ConsumerWidget {
-  const _ProductView({super.key});
+  final ProductModel product;
+
+  const _ProductView({
+    required this.product,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Stack(
+    return Stack(
       children: [
         SizedBox(
           height: 350,
           width: 600,
           child: _ImageGallery(images: []),
         ),
-        _ProductDetail(),
+        _ProductDetail(product: product),
       ],
     );
   }
 }
 
 class _ProductDetail extends ConsumerWidget {
-  const _ProductDetail();
+  final ProductModel product;
+
+  const _ProductDetail({required this.product});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DraggableScrollableSheet(
@@ -76,15 +103,15 @@ class _ProductDetail extends ConsumerWidget {
                 ListView(
                   controller: scrollController,
                   children: [
-                    const ListTile(
+                    ListTile(
                       title: Text(
-                        "Pizza",
-                        style: TextStyle(
+                        product.name,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
                       ),
-                      subtitle: Text(
+                      subtitle: const Text(
                         "Food - mins",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
@@ -114,9 +141,9 @@ class _ProductDetail extends ConsumerWidget {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
-                                  "Comida rapida",
-                                  style: TextStyle(
+                                Text(
+                                  product.categoryId,
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
@@ -124,21 +151,17 @@ class _ProductDetail extends ConsumerWidget {
                               ],
                             ),
                             Row(children: [
-                              CircleAvatar(
+                              const CircleAvatar(
                                 radius: 25,
                                 backgroundColor: colorSecondary,
-                                child: IconButton(
-                                  iconSize: 20,
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.money_off_sharp,
-                                    color: colorPrincipal,
-                                  ),
+                                child: Icon(
+                                  Icons.money_off_sharp,
+                                  color: colorPrincipal,
                                 ),
                               ),
-                              const Text(
-                                "500",
-                                style: TextStyle(
+                              Text(
+                                "${product.price}",
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
@@ -153,8 +176,8 @@ class _ProductDetail extends ConsumerWidget {
                       dense: true,
                       title: Divider(),
                     ),
-                    const ListTile(
-                      title: Padding(
+                    ListTile(
+                      title: const Padding(
                         padding: EdgeInsets.only(bottom: 8),
                         child: Text(
                           "Description",
@@ -165,8 +188,8 @@ class _ProductDetail extends ConsumerWidget {
                         ),
                       ),
                       subtitle: Text(
-                        "product.description",
-                        style: TextStyle(
+                        product.description,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
                         ),
@@ -177,34 +200,38 @@ class _ProductDetail extends ConsumerWidget {
                       dense: true,
                       title: Divider(),
                     ),
-                    const ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                      title: Text(
-                        "Ingredientes",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    /*   if (product.dish.ingredients != null)
-                      for (final ingredient in product.dish.ingredients!)
-                        ListTile(
-                          visualDensity:
-                              const VisualDensity(horizontal: 0, vertical: -4),
-                          leading: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: palette.light,
-                              child: Icon(Icons.check, color: palette.main)),
-                          subtitle: Text(
-                            ingredient,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: palette.primaryText),
+                    if (product.ingredients!.length > 0)
+                      const ListTile(
+                        visualDensity:
+                            VisualDensity(horizontal: 0, vertical: -4),
+                        title: Text(
+                          "Ingredientes",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
-                   */
+                      ),
+                    for (final ingredient in product.ingredients!)
+                      ListTile(
+                        visualDensity: const VisualDensity(
+                          horizontal: 0,
+                          vertical: -4,
+                        ),
+                        leading: const CircleAvatar(
+                          backgroundColor: colorSecondary,
+                          radius: 15,
+                          child: Icon(Icons.check, color: colorPrincipal),
+                        ),
+                        subtitle: Text(
+                          ingredient,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: colorTerciario,
+                          ),
+                        ),
+                      ),
                     const SizedBox(
                       height: 60,
                     )

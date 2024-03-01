@@ -7,7 +7,10 @@ import 'package:table_tap_admin/features/auth/presentation/screen/password/verif
 import 'package:table_tap_admin/features/auth/presentation/screen/register/register_screen.dart';
 import 'package:table_tap_admin/features/auth/presentation/screen/splash/splash_screen.dart';
 import 'package:table_tap_admin/features/home/presentation/screen/home_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/category/category_edit_modal.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_details_screen.dart';
+import 'package:table_tap_admin/features/product/presentation/screen/product/product_edit_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_register_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/details_screen.dart';
@@ -53,7 +56,11 @@ final goRouterProvider = GoRouter(
     ),
     GoRoute(
       path: RoutesConstants.restaurant_details,
-      builder: (context, state) => const DetailsRestScreen(),
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String id = (extra as Map<String, dynamic>)['id'] ?? '';
+        return const DetailsRestScreen();
+      },
     ),
     GoRoute(
       path: RoutesConstants.products,
@@ -65,7 +72,23 @@ final goRouterProvider = GoRouter(
     ),
     GoRoute(
       path: RoutesConstants.productDetail,
-      builder: (context, state) => const ProductDetailsScreen(),
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String productId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return ProductDetailsScreen(productIds: productId);
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.productEdit,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String productId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return ProductEditScreen(productId: productId);
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.categories,
+      builder: (context, state) => const CategoryScreen(),
     ),
     GoRoute(
       path: RoutesConstants.tables,
@@ -73,7 +96,11 @@ final goRouterProvider = GoRouter(
     ),
     GoRoute(
       path: RoutesConstants.tableDetail,
-      builder: (context, state) => const TableDetailsScreen(),
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String id = (extra as Map<String, dynamic>)['id'] ?? '';
+        return const TableDetailsScreen();
+      },
     ),
     GoRoute(
       path: RoutesConstants.tableAdd,

@@ -36,7 +36,7 @@ class SelectCustomerState extends State<SelectCustomer> {
         value: _selectedOption,
         isExpanded: true,
         items: widget.options.map((opcion) {
-          final selectOption = opcion == "Seleccione" ? false : true;
+          final selectOption = opcion == "seleccione" ? false : true;
           return DropdownMenuItem(
             value: opcion,
             enabled: selectOption,
