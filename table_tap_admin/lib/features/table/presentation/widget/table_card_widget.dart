@@ -51,7 +51,7 @@ class TableCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(Icons.remove_red_eye, color: colorSecondary),
+              const Icon(Icons.edit, color: colorSecondary),
             ],
           ),
         ),

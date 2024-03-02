@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/auth/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/home/presentation/widget/profile_widget.dart';
@@ -8,6 +9,7 @@ import 'package:table_tap_admin/features/order/presentation/screen/order/order_s
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -41,11 +43,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       case 1:
         return const CategoryScreen();
       case 2:
-        return OrderScreen();
+        return const OrderScreen();
       case 3:
         return const TableScreen();
       case 4:
-        return const TableScreen();
+        return RegisterResScreen();
       default:
         return Container();
     }
@@ -69,7 +71,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    init();
     super.initState();
   }
 
@@ -153,7 +154,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     onTap: () {
                       closeDrawer();
-                      setState(() {});
+                      setState(() {
+                        handleCloseSession(context);
+                      });
                     },
                   ),
                 ),
@@ -226,11 +229,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-/*
+
   handleCloseSession(BuildContext context) async {
     final usuario = ref.read(usuarioProvider.notifier);
     try {
-      setState(() {});
+      await usuario.logout();
+      context.go(RoutesConstants.login);
     } catch (error) {
       _buidMessage(error.toString());
     } finally {
@@ -244,5 +248,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         content: Text(message),
       ),
     );
-  }*/
+  }
 }

@@ -1,55 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:table_tap_admin/config/config.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/tabs/orders_complete_tab.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/tabs/orders_finish_tab.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/tabs/orders_pending_tab.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/tabs/orders_processing_tab.dart';
+import 'package:table_tap_admin/features/order/presentation/screen/tabs/orders_tab.dart';
 
 class OrderScreen extends StatefulWidget {
-  OrderScreen({Key? key}) : super(key: key);
+  const OrderScreen({Key? key}) : super(key: key);
 
   @override
   _OrderScreenState createState() => _OrderScreenState();
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  int _selectedIndex = 0; // Índice de la pestaña seleccionada
-
-  final List<Widget> _widgetOptions = <Widget>[
-    // Contenido para la pestaña de órdenes
-    ListView.builder(
-      itemCount: 20, // Cantidad de elementos en la lista
-      itemBuilder: (context, index) {
-        // Construir cada elemento de la lista
-        return ListTile(
-          leading: Icon(Icons.list), // Icono a la izquierda del elemento
-          title: Text('Orden $index'), // Texto principal del elemento
-          subtitle: Text('Descripción de la orden $index'), // Subtítulo del elemento
-          trailing: Icon(Icons.arrow_forward), // Icono a la derecha del elemento
-          onTap: () {
-            // Acción al presionar el elemento de la lista
-            print('Tapped on Order $index');
-          },
-        );
-      },
-    ),
-    // Contenido para la pestaña de pendientes
-    Center(
-      child: Text('Pendientes'),
-    ),
-    // Contenido para la pestaña de en proceso
-    Center(
-      child: Text('En proceso'),
-    ),
-    // Contenido para la pestaña de finalizadas
-    Center(
-      child: Text('Finalizadas'),
-    ),
-    // Contenido para la pestaña de configuración
-    Center(
-      child: Text('Configuración'),
-    ),
+  int _selectedIndex = 0;
+  final List<String> _tabTitles = [
+    'Todas las Ordenes',
+    'Ordenes Pendientes',
+    'Ordenes En proceso',
+    'Ordenes Completadas',
+    'Ordenes Finalizadas'
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Actualizar el índice de la pestaña seleccionada
+      _selectedIndex = index;
     });
   }
 
@@ -57,9 +33,9 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mis órdenes'),
+        title: Text(_tabTitles[_selectedIndex]),
       ),
-      body: _widgetOptions[_selectedIndex], // Mostrar el contenido de la pestaña seleccionada
+      body: _getBody(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -79,12 +55,12 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.done_all),
-            label: 'Finalizadas',
+            label: 'Completadas',
             backgroundColor: colorSecondary,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configuración',
+            icon: Icon(Icons.price_check),
+            label: 'Finalizadas',
             backgroundColor: colorSecondary,
           ),
         ],
@@ -94,5 +70,22 @@ class _OrderScreenState extends State<OrderScreen> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  Widget _getBody(int index) {
+    switch (index) {
+      case 0:
+        return const OrdersTab();
+      case 1:
+        return const OrdersTabPending();
+      case 2:
+        return const OrdersTabProcessing();
+      case 3:
+        return const OrdersTabComplete();
+      case 4:
+        return const OrdersTabFinish();
+      default:
+        return const SizedBox();
+    }
   }
 }

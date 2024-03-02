@@ -1,30 +1,52 @@
-import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 
-class ItemOrder {
-  final ProductModel product;
-  final int count;
-  final String? note;
+class DishModel {
+  final int amount;
+  final double price;
+  final String name;
+  final List<String> ingredients;
+  final List<String> photos;
 
-  const ItemOrder({
-    required this.count,
-    required this.product,
-    this.note,
+  DishModel({
+    required this.amount,
+    required this.price,
+    required this.name,
+    required this.ingredients,
+    required this.photos,
   });
 
-  factory ItemOrder.fromJson(Map<String, dynamic> json) {
-    return ItemOrder(
-      count: json['count'] as int,
-      product:
-          ProductModel.fromJson(json['product'] as Map<String, dynamic>, ""),
-      note: json['note'] as String?,
+  factory DishModel.fromJson(Map<String, dynamic> json) {
+    return DishModel(
+      amount: json['amount'] as int,
+      price: json['price'] as double,
+      name: json['name'] as String,
+      ingredients: List<String>.from(json['ingredients'] as List<dynamic>),
+      photos: List<String>.from(json['photos'] as List<dynamic>),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'count': count,
-      'product': product.toJson(),
-      'note': note,
+      'amount': amount,
+      'price': price,
+      'name': name,
+      'ingredients': ingredients,
+      'photos': photos,
     };
+  }
+
+  DishModel copyWith({
+    int? amount,
+    double? price,
+    String? name,
+    List<String>? ingredients,
+    List<String>? photos,
+  }) {
+    return DishModel(
+      amount: amount ?? this.amount,
+      price: price ?? this.price,
+      name: name ?? this.name,
+      ingredients: ingredients ?? this.ingredients,
+      photos: photos ?? this.photos,
+    );
   }
 }

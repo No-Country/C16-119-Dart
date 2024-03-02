@@ -11,8 +11,10 @@ abstract class OrderRepository {
   Future<OrderModel?> updateOrder(OrderModel order, String id);
 
   // listar todos
-  Future<List<OrderModel>> getOrders();
+  Stream<List<OrderModel>> getOrders();
 
   // buscar por id
   Future<OrderModel?> getOrderById(String id);
+
+  Future<bool> updateOrderStatus(String newStatus, String id);
 }

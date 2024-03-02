@@ -1,84 +1,79 @@
 import 'package:table_tap_admin/features/order/domain/models/dishes_model.dart';
 
-enum OrderStatus {
-  pending,
-  processing,
-  completed,
-}
-
 class OrderModel {
   final String? id;
-  final List<ItemOrder> listProducts;
-  final int countTotal;
+  final String nameCustomer;
+  final int timeTotal;
   final double priceTotal;
-  final OrderStatus status;
+  final int? amountTotal;
+  final List<DishModel> dishes;
+  final String? status;
 
-  const OrderModel({
-    required this.listProducts,
-    required this.priceTotal,
-    required this.countTotal,
-    required this.status,
+  OrderModel({
     this.id,
+    required this.nameCustomer,
+    required this.priceTotal,
+    required this.timeTotal,
+    this.status,
+    required this.amountTotal,
+    required this.dishes,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json, String id) {
+  factory OrderModel.fromJson(Map<Object?, Object?> json, String id) {
+    final double _priceTotal = (json['priceTotal'] as num?)?.toDouble() ?? 0.0;
+    final int _amountTotal = (json['amountTotal'] as num?)?.toInt() ?? 0;
+    final int _timeTotal = (json['timeTotal'] as int?) ?? 0;
+    final String? _idOrder = json['idOrder'] as String?;
+    final String? _nameCustomer = json['nameCustomer'] as String? ?? '';
+    final String? _status = json['status'] as String? ?? '';
+
+    // Mapear la lista de platos
+    //final List<DishModel> dishes = (json['dishes'] as List<dynamic>?)
+    //        ?.map((dishJson) =>
+    //            DishModel.fromJson(dishJson as Map<Object?, Object?>))
+    //        .toList() ??
+    //    [];
+
     return OrderModel(
       id: id,
-      listProducts: (json['listProducts'] as List<dynamic>)
-          .map((productJson) => ItemOrder.fromJson(productJson))
-          .toList(),
-      countTotal: json['countTotal'] as int,
-      priceTotal: json['priceTotal'] as double,
-      status: _parseOrderStatus(json['status'] as String),
+      nameCustomer: _nameCustomer!,
+      priceTotal: _priceTotal,
+      amountTotal: _amountTotal,
+      timeTotal: _timeTotal,
+      status: _status,
+      dishes: [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'listProducts': listProducts.map((product) => product.toJson()).toList(),
-      'countTotal': countTotal,
+      'id': id,
+      'nameCustomer': nameCustomer,
       'priceTotal': priceTotal,
-      'status': _orderStatusToString(status),
+      'amountTotal': amountTotal,
+      'timeTotal': timeTotal,
+      'status': status,
+      'dishes': dishes.map((dish) => dish.toJson()).toList(),
     };
-  }
-
-  static OrderStatus _parseOrderStatus(String status) {
-    switch (status) {
-      case 'pending':
-        return OrderStatus.pending;
-      case 'processing':
-        return OrderStatus.processing;
-      case 'completed':
-        return OrderStatus.completed;
-      default:
-        throw Exception('Unexpected order status: $status');
-    }
-  }
-
-  static String _orderStatusToString(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return 'pending';
-      case OrderStatus.processing:
-        return 'processing';
-      case OrderStatus.completed:
-        return 'completed';
-    }
   }
 
   OrderModel copyWith({
     String? id,
-    List<ItemOrder>? listProducts,
-    int? countTotal,
+    String? nameCustomer,
     double? priceTotal,
-    OrderStatus? status,
+    int? amounTotal,
+    int? timeTotal,
+    String? status,
+    List<DishModel>? dishes,
   }) {
     return OrderModel(
       id: id ?? this.id,
-      listProducts: listProducts ?? this.listProducts,
-      countTotal: countTotal ?? this.countTotal,
+      nameCustomer: nameCustomer ?? this.nameCustomer,
       priceTotal: priceTotal ?? this.priceTotal,
+      amountTotal: amountTotal ?? this.amountTotal,
+      timeTotal: timeTotal ?? this.timeTotal,
       status: status ?? this.status,
+      dishes: dishes ?? this.dishes,
     );
   }
 }

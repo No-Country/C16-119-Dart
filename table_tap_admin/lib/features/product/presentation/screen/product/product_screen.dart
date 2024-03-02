@@ -19,8 +19,6 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
   @override
   void initState() {
     super.initState();
-    // Cargar los productos al iniciar la pantalla
-    ref.read(productsProvider.notifier).state.list();
   }
 
   @override
