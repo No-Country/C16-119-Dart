@@ -6,12 +6,12 @@ class TablesRepositoryImpl extends TablesRepository {
   TablesRepositoryImpl(this.datasource);
 
   @override
-  Future<List<Table>> getTablesByPage({bool available = true}) {
-    return datasource.getTablesByPage(available: available);
+  Future<List<TableEntity>> getTablesByPage() async {
+    return datasource.getTablesByPage();
   }
 
   @override
-  Future<Table> getTable() {
+  Future<TableEntity> getTable() {
     return datasource.getTable();
   }
 

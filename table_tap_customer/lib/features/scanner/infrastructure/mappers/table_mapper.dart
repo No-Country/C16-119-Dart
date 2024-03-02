@@ -1,13 +1,13 @@
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
 
 class TableMapper {
-  static Table jsonToEntity(Map<String, dynamic> json) => Table(
+  static TableEntity jsonToEntity(Map<String, dynamic> json) => TableEntity(
         code: json["id"],
         available: json["available"],
         number: json["number"],
       );
 
-  static Map<String, dynamic> toJson(Table table) => {
+  static Map<String, dynamic> toJson(TableEntity table) => {
         "code": table.code,
         "available": table.available,
         "number": table.number,

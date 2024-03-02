@@ -44,13 +44,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCi7ebMe27bYC5va840cB3h2NFYKHqLiN4',
-    appId: '1:449686849785:web:eeb007d0ebde7101b2fa28',
-    messagingSenderId: '449686849785',
-    projectId: 'tabletap-45899',
-    authDomain: 'tabletap-45899.firebaseapp.com',
-    storageBucket: 'tabletap-45899.appspot.com',
-  );
+      apiKey: 'AIzaSyCi7ebMe27bYC5va840cB3h2NFYKHqLiN4',
+      appId: '1:449686849785:web:eeb007d0ebde7101b2fa28',
+      messagingSenderId: '449686849785',
+      projectId: 'tabletap-45899',
+      authDomain: 'tabletap-45899.firebaseapp.com',
+      storageBucket: 'tabletap-45899.appspot.com',
+      databaseURL: "https://tabletap-45899-default-rtdb.firebaseio.com/");
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBCElBE4fNbjUCilQ7zyurFycEzj2tlBHg',

@@ -11,7 +11,7 @@ class TableLocalStorageDatasourceImpl extends TableLocalStorageDatasource {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
-  Future<void> saveTable(Table table) async {
+  Future<void> saveTable(TableEntity table) async {
     try {
       final SharedPreferences prefs = await _prefs;
       prefs.setString(
@@ -22,7 +22,7 @@ class TableLocalStorageDatasourceImpl extends TableLocalStorageDatasource {
   }
 
   @override
-  Future<Table> getTable() async {
+  Future<TableEntity> getTable() async {
     try {
       final SharedPreferences prefs = await _prefs;
       final res = prefs.getString(KeysSharedPreferences.table);
@@ -30,7 +30,7 @@ class TableLocalStorageDatasourceImpl extends TableLocalStorageDatasource {
       return TableMapper.jsonToEntity(resDecode);
     } catch (e) {
       print(e);
-      return Table(code: "", number: 0);
+      return TableEntity(code: "", number: 0);
     }
   }
 

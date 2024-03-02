@@ -10,7 +10,7 @@ String _$tableSelectedHash() => r'4bf15962ddf0989db62747264b5e2bd12053e62b';
 
 /// See also [TableSelected].
 @ProviderFor(TableSelected)
-final tableSelectedProvider = NotifierProvider<TableSelected, Table>.internal(
+final tableSelectedProvider = NotifierProvider<TableSelected, TableEntity>.internal(
   TableSelected.new,
   name: r'tableSelectedProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -20,6 +20,6 @@ final tableSelectedProvider = NotifierProvider<TableSelected, Table>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$TableSelected = Notifier<Table>;
+typedef _$TableSelected = Notifier<TableEntity>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,11 +1,9 @@
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
 
 abstract class TablesRepository {
-  Future<List<Table>> getTablesByPage({
-    bool available = true,
-  });
+  Future<List<TableEntity>> getTablesByPage();
 
-  Future<Table> getTable();
+  Future<TableEntity> getTable();
 
-  Future<bool> changeStatusTable(String idTable,  bool status);
+  Future<bool> changeStatusTable(String idTable, bool status);
 }

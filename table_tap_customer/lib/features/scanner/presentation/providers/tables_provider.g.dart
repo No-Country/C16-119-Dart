@@ -10,7 +10,7 @@ String _$tablesListHash() => r'23954c8d8259c87761d9bd11dced6c31d8b00748';
 
 /// See also [TablesList].
 @ProviderFor(TablesList)
-final tablesListProvider = NotifierProvider<TablesList, List<Table>>.internal(
+final tablesListProvider = NotifierProvider<TablesList, List<TableEntity>>.internal(
   TablesList.new,
   name: r'tablesListProvider',
   debugGetCreateSourceHash:
@@ -19,6 +19,6 @@ final tablesListProvider = NotifierProvider<TablesList, List<Table>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$TablesList = Notifier<List<Table>>;
+typedef _$TablesList = Notifier<List<TableEntity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

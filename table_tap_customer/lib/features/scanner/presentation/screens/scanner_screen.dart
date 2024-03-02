@@ -59,8 +59,6 @@ class ScannerScreenState extends ConsumerState<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     void foundBarcode(BarcodeCapture barcode) async {
-      // if (ref.watch(tableSelectedProvider).available) return;
-
       String qr = barcode.barcodes[0].rawValue ?? "";
       if (!hasTable && qr.isNotEmpty) {
         hasTable = true;

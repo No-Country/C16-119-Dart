@@ -17,12 +17,12 @@
 //       required this.dish});
 // }
 
-class Table {
+class TableEntity {
   String? code;
   bool available;
   int? number;
 
-  Table({
+  TableEntity({
     required this.code,
     this.available = false,
     required this.number,

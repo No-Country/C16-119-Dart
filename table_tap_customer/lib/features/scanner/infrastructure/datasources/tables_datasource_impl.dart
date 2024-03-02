@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:log_print/log_print.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
@@ -9,20 +10,25 @@ class TablesDatasourceImpl extends TablesDatasource {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
-  Future<List<Table>> getTablesByPage({bool available = true}) async {
+  Future<List<TableEntity>> getTablesByPage() async {
     try {
       CollectionReference collectionReferenceProducts =
           db.collection(DbNames.tables);
       QuerySnapshot queryProducts = await collectionReferenceProducts
-          .where("available", isEqualTo: available)
+          .where("available", isEqualTo: true)
           .get();
-      List<Table> productsList = [];
+      List<TableEntity> tablesList = [];
 
       for (var element in queryProducts.docs) {
         Map<dynamic, dynamic> res = element.data() as Map;
         res = {...res, "id": element.id};
+        tablesList
+            .add(TableMapper.jsonToEntity(res.map((key, value) => MapEntry(
+                  key,
+                  value,
+                ))));
       }
-      return productsList;
+      return tablesList;
     } catch (e) {
       print(e);
       return [];
@@ -30,7 +36,7 @@ class TablesDatasourceImpl extends TablesDatasource {
   }
 
   @override
-  Future<Table> getTable() async {
+  Future<TableEntity> getTable() async {
     final SharedPreferences prefs = await _prefs;
     final res = prefs.getString("qr");
     final idTable = prefs.getString("idTable");
@@ -47,7 +53,7 @@ class TablesDatasourceImpl extends TablesDatasource {
       return TableMapper.jsonToEntity(existTable);
     } catch (e) {
       print(e);
-      return Table(code: "", number: 0);
+      return TableEntity(code: "", number: 0);
     }
   }
 

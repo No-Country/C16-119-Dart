@@ -11,12 +11,12 @@ class TableSelected extends _$TableSelected {
   final TablesRepositoryImpl tablesRepositoryImpl =
       TablesRepositoryImpl(TablesDatasourceImpl());
 
-  final initialValue = Table(code: "", number: 0, available: false);
+  final initialValue = TableEntity(code: "", number: 0, available: false);
   @override
-  Table build() => initialValue;
+  TableEntity build() => initialValue;
 
-  Future<Table> loadTable() async {
-    Table table = await tablesRepositoryImpl.getTable();
+  Future<TableEntity> loadTable() async {
+    TableEntity table = await tablesRepositoryImpl.getTable();
     if (table.available) {
       state = table;
       saveTableLocal(table);
@@ -35,7 +35,7 @@ class TableSelected extends _$TableSelected {
         await tablesRepositoryImpl.changeStatusTable(idTable, false);
   }
 
-  void saveTableLocal(Table table) async {
+  void saveTableLocal(TableEntity table) async {
     await tableLocalStorageRepositoryImpl.saveTable(table);
   }
 

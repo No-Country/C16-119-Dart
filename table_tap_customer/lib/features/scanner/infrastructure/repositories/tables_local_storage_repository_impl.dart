@@ -6,12 +6,12 @@ class TableLocalStorageRepositoryImpl extends TableLocalStorageRepository {
   TableLocalStorageRepositoryImpl(this.datasource);
 
   @override
-  Future<Table> getTable() {
+  Future<TableEntity> getTable() {
     return datasource.getTable();
   }
 
   @override
-  Future<void> saveTable(Table table) {
+  Future<void> saveTable(TableEntity table) {
     return datasource.saveTable(table);
   }
 

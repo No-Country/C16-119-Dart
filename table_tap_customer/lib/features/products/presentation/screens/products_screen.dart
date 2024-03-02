@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,7 +39,9 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
 
     void onItemTapped(int index) {
       if (index == 1) {
-        context.push(RoutesNames.scanner);
+        kIsWeb
+            ? context.push(RoutesNames.tables)
+            : context.push(RoutesNames.scanner);
       } else {
         setState(() {
           _selectedIndex = index;
@@ -85,12 +88,18 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
                 height: 60,
                 width: 60,
                 child: FloatingActionButton(
-                  onPressed: () => context.push(RoutesNames.scanner),
-                  child: const Icon(
-                    Icons.qr_code,
-                    color: Colors.white,
-                  ),
-                ),
+                    onPressed: () => kIsWeb
+                        ? context.push(RoutesNames.tables)
+                        : context.push(RoutesNames.scanner),
+                    child: kIsWeb
+                        ? const Icon(
+                            Icons.table_restaurant,
+                            color: Colors.white,
+                          )
+                        : const Icon(
+                            Icons.qr_code,
+                            color: Colors.white,
+                          )),
               ),
               label: '',
             ),

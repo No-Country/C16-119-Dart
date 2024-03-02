@@ -9,13 +9,12 @@ class TablesList extends _$TablesList {
   final TablesRepositoryImpl tablesRepositoryImpl =
       TablesRepositoryImpl(TablesDatasourceImpl());
   @override
-  List<Table> build() => [];
+  List<TableEntity> build() => [];
 
   Future loadNextPage() async {
-    List<Table> tablesList = await tablesRepositoryImpl.getTablesByPage();
-
+    List<TableEntity> tablesList = await tablesRepositoryImpl.getTablesByPage();
     // if ( state.isLoading || state.isLastPage ) return;
-    state = [...state, ...tablesList];
+    state = tablesList;
 
     // final products = await productsRepository.getProductsByPage(
     //     limit: state.limit, offset: state.offset);
@@ -30,6 +29,7 @@ class TablesList extends _$TablesList {
 
   Future saveOrder() async {}
   Future fillTable(String idTable) async {
-    bool isOccupyTable = await tablesRepositoryImpl.changeStatusTable(idTable, false);
+    bool isOccupyTable =
+        await tablesRepositoryImpl.changeStatusTable(idTable, false);
   }
 }

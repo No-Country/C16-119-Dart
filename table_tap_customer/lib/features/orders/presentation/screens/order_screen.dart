@@ -215,7 +215,9 @@ class _OrderView extends ConsumerWidget {
                                 resetOrder();
                                 Navigator.of(context).pop();
                                 MsgSnackBar.show(
-                                    context, "Orden realizada", palette.main);
+                                    context,
+                                    "Se te notificara cuando tu orden este lista",
+                                    palette.main);
                               },
                               style: ButtonStyle(
                                   backgroundColor:
