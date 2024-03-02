@@ -23,6 +23,7 @@ class CategoriesNotifier
   }
 
   Future<void> addCategory(CategoryModel category) async {
+    list();
     state = const AsyncLoading();
     try {
       await categoryRepository.createCategory(category);
@@ -34,6 +35,7 @@ class CategoriesNotifier
   }
 
   Future<void> updateCategory(CategoryModel Category, String id) async {
+    list();
     state = const AsyncLoading();
     try {
       await categoryRepository.updateCategory(Category, id);
@@ -45,6 +47,7 @@ class CategoriesNotifier
   }
 
   Future<void> deleteCategory(String CategoryId) async {
+    list();
     state = const AsyncLoading();
     try {
       await categoryRepository.deleteCategory(CategoryId);
@@ -56,6 +59,7 @@ class CategoriesNotifier
   }
 
   CategoryModel? getCategotyById(String categoryId) {
+    list();
     if (state is AsyncData<List<CategoryModel>>) {
       final categories = (state as AsyncData<List<CategoryModel>>).value;
       return categories.firstWhere(
@@ -67,7 +71,7 @@ class CategoriesNotifier
   }
 
   Future<List<CategoryModel>> getCateroryAll() async {
-    await list();
+    list();
     if (state is AsyncData<List<CategoryModel>>) {
       final categories = (state as AsyncData<List<CategoryModel>>).value;
       return categories;

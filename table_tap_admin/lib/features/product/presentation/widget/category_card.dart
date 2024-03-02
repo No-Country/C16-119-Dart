@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_edit_modal.dart';
-import 'package:table_tap_admin/features/shared/widgets/text_status.dart';
 
 class CategoryCard extends StatelessWidget {
   final CategoryModel category;
@@ -15,43 +14,47 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
-      shadowColor: colorPrincipal,
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category.name,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                TextStatusCustomer(status: category.status!),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: colorSecondary),
-              child: IconButton(
-                onPressed: () {
-                  _showAddCategoryModal(context, category.id!);
-                },
-                icon: const Icon(Icons.edit, color: colorPrincipal),
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: colorSecondary, width: 1),
+      ),
+      child: InkWell(
+        onTap: () {
+          _showEditCategoryModal(context, category.id!);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    category.name,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+               const   SizedBox(height: 4),
+                  Text(
+                    'Estado: ${category.status! ? 'Activo' : 'Inactivo'}',
+                    style: TextStyle(
+                      color: category.status! ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              const Icon(Icons.edit, color: colorSecondary),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _showAddCategoryModal(BuildContext context, String id) {
+  void _showEditCategoryModal(BuildContext context, String id) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

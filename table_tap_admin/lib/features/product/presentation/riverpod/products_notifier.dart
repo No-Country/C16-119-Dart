@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/domain/repositories/product_repository.dart';
@@ -21,10 +23,10 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     }
   }
 
-  Future<void> addProduct(ProductModel product) async {
+  Future<void> addProduct(ProductModel product, List<File> image) async {
     state = const AsyncLoading();
     try {
-      await productRepository.createProduct(product);
+      await productRepository.createProduct(product, image);
       final updatedProducts = await productRepository.getProducts();
       state = AsyncData(updatedProducts);
     } catch (error) {
@@ -32,10 +34,11 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     }
   }
 
-  Future<void> updateProduct(ProductModel product, String id) async {
+  Future<void> updateProduct(
+      ProductModel product, String id, List<File> image) async {
     state = const AsyncLoading();
     try {
-      await productRepository.updateProduct(product, id);
+      await productRepository.updateProduct(product, id, image);
       final updatedProducts = await productRepository.getProducts();
       state = AsyncData(updatedProducts);
     } catch (error) {
@@ -66,7 +69,6 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
   }
 
   Future<List<ProductModel>> getProductAll() async {
-    await list();
     if (state is AsyncData<List<ProductModel>>) {
       final products = (state as AsyncData<List<ProductModel>>).value;
       return products;

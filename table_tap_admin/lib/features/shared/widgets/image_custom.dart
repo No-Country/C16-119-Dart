@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageCustom extends StatefulWidget {
   final String? initialImageUrl;
-  final Function(String)? onImageChanged;
+  final Function(File)? onImageChanged;
 
   const ImageCustom({Key? key, this.initialImageUrl, this.onImageChanged})
       : super(key: key);
@@ -29,7 +30,7 @@ class _ImageCustomState extends State<ImageCustom> {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       _imageUrl = image.path;
-      widget.onImageChanged?.call(_imageUrl!); // Notify parent widget if needed
+      widget.onImageChanged?.call(File(_imageUrl!));
       setState(() {});
     }
   }
@@ -39,34 +40,38 @@ class _ImageCustomState extends State<ImageCustom> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const Text("Imagen del producto"),
+        const SizedBox(height: 10),
         GestureDetector(
-          // Add a GestureDetector for image tapping
           onTap: _pickImage,
           child: Container(
             width: double.infinity,
             height: 200.0,
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+              border: Border.all(
+                color: Theme.of(context).primaryColor,
+                width: 1.0,
+              ),
               borderRadius: BorderRadius.circular(20.0),
             ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                if (_imageUrl != null && _imageUrl!.isNotEmpty)
-                  Image.file(
-                    File(_imageUrl!), // Load image from local file
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
-                if (_imageUrl == null || _imageUrl!.isEmpty)
-                  Icon(
+            child: _imageUrl == null || _imageUrl!.isEmpty
+                ? const Icon(
                     Icons.add_a_photo_outlined,
                     size: 48.0,
-                  ),
-              ],
-            ),
+                  )
+                : widget.initialImageUrl == null
+                    ? CachedNetworkImage(
+                        imageUrl: widget.initialImageUrl!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      )
+                    : Image.file(
+                        File(_imageUrl!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
           ),
         ),
       ],

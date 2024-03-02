@@ -1,68 +1,91 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
+import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/table/presentation/widget/table_card_widget.dart';
 
-class TableDetailsScreen extends StatefulWidget {
+class TableDetailsScreen extends ConsumerStatefulWidget {
+  final String tableId;
+
   const TableDetailsScreen({
     Key? key,
+    required this.tableId,
   }) : super(key: key);
 
   @override
-  State<TableDetailsScreen> createState() => _TableDetailsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TableDetailsScreenState();
 }
 
-class _TableDetailsScreenState extends State<TableDetailsScreen> {
-  DocumentSnapshot? tableData;
-  String idTable = "1708979300619";
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTableData();
-  }
-
-  Future<void> fetchTableData() async {
-    final docRef =
-        FirebaseFirestore.instance.collection('tables').doc("1708979300619");
-    final snapshot = await docRef.get();
-    setState(() {
-      tableData = snapshot;
-    });
-  }
-
+class _TableDetailsScreenState extends ConsumerState<TableDetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    if (tableData == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(tableData?['id'] ?? 'Mesa Detalles'),
+        title: const Text("Detalles de la mesa"),
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: QrImageView(
-                  data: tableData?['id'],
-                  size: 200,
-                  backgroundColor: Colors.white,
+      body: Consumer(
+        builder: (context, ref, child) {
+          final AsyncValue<List<TableModel>> tableState =
+              ref.watch(tablesFutureProvider);
+
+          return tableState.when(
+            loading: () => const Center(
+              child: LoadingCustomer(),
+            ),
+            error: (error, stackTrace) => const Center(
+              child: Text("Error al cargar las mesas"),
+            ),
+            data: (tables) {
+              final table = tables.firstWhere(
+                (table) => table.id == widget.tableId,
+              );
+
+              if (table == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: QrImageView(
+                        data: table.id!,
+                        version: QrVersions.auto,
+                        size: 350,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text(
+                      'Detalles de la mesa',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text('ID: ${table.id}'),
+                    Text('Mesa No. ${table.number}'),
+                    Text(
+                      'Estado: ${table.available! ? "Disponible" : "Ocupada"}',
+                      style: TextStyle(
+                        color: table.available! ? Colors.green : Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text('ID: ${tableData?['id'] ?? 'N/A'}'),
-              // Add other fields as needed:
-            //  Text('Nombre: ${tableData?['name'] ?? 'N/A'}'),
-            //  Text('Capacidad: ${tableData?['capacity'] ?? 'N/A'}'),
-              // ...
-            
-            ],
-          ),
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }

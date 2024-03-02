@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_tap_admin/config/config.dart';
+import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 
 class SelectCustomer extends StatefulWidget {
-  final List<String> options;
+  final List<CategoryModel> options;
   final String? initialValue;
   final Function(String?) onChanged;
   final IconData? icono;
@@ -25,33 +26,61 @@ class SelectCustomerState extends State<SelectCustomer> {
   @override
   void initState() {
     super.initState();
-    _selectedOption = widget.initialValue;
+    if (widget.initialValue!.isNotEmpty) {
+      _selectedOption = widget.initialValue;
+    } else {
+      _selectedOption = null;
+    }
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return InputDecorator(
       decoration: _buildInputDecoration(context),
-      child: DropdownButton<String>(
-        value: _selectedOption,
+      child: DropdownButton<CategoryModel>(
+        value: _selectedOption != null
+            ? widget.options
+                .firstWhere((element) => element.name == _selectedOption)
+            : null,
         isExpanded: true,
-        items: widget.options.map((opcion) {
-          final selectOption = opcion == "seleccione" ? false : true;
-          return DropdownMenuItem(
-            value: opcion,
-            enabled: selectOption,
+        items: [
+          DropdownMenuItem<CategoryModel>(
+            value: null,
             child: Text(
-              opcion,
-              style: selectOption
-                  ? Theme.of(context).textTheme.bodyMedium
-                  : Theme.of(context).textTheme.bodySmall,
+              'seleccione',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-          );
-        }).toList(),
-        onChanged: (valor) {
+          ),
+          ...widget.options.map((opcion) {
+            final selectOption = opcion == "" ? false : true;
+            return DropdownMenuItem(
+              value: opcion,
+              enabled: selectOption,
+              child: Row(
+                children: [
+                  Text(
+                    opcion.name,
+                    style: selectOption
+                        ? Theme.of(context).textTheme.bodyMedium
+                        : Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(width: 20),
+                  _selectedOption == opcion.name
+                      ? const Icon(Icons.check)
+                      : Container()
+                ],
+              ),
+            );
+          }),
+        ],
+        onChanged: (category) {
           setState(() {
-            _selectedOption = valor!;
-            widget.onChanged(valor);
+            _selectedOption = category!.name;
+            widget.onChanged(category.name);
+            if (category != null) {
+              print(category.name);
+            }
           });
         },
         style: Theme.of(context).textTheme.bodySmall,

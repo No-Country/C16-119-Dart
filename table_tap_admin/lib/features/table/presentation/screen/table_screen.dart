@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
-import 'package:table_tap_admin/features/table/presentation/riverpod/table_provider.dart';
+import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/table/presentation/widget/table_card_widget.dart';
 
 class TableScreen extends ConsumerStatefulWidget {
   const TableScreen({Key? key}) : super(key: key);
@@ -15,48 +16,49 @@ class TableScreen extends ConsumerStatefulWidget {
 }
 
 class _TableScreenState extends ConsumerState<TableScreen> {
-  bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _fetchTablesAndUpdateProvider();
-  }
-
-  Future<void> _fetchTablesAndUpdateProvider() async {
-    final tableRepository = ref.read(tableRepositoryProvider);
-    final tables = await tableRepository.getTables();
-    ref.read(tableProvider.notifier).state = tables;
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final tables = ref.watch(tableProvider);
-
     return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: IconButton(
-        color: colorSecondary,
-        onPressed: () {
-          context.push(RoutesConstants.tableAdd);
-        },
-        icon: const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Icon(Icons.add, color: colorTerciario),
+      appBar: AppBar(title: const Text("Lista de mesas")),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: colorSecondary,
+        child: const Icon(
+          Icons.add,
+          color: colorPrincipal,
         ),
+        onPressed: () {
+          context.push(RoutesConstants.productAdd);
+        },
       ),
-      body: isLoading
-          ? const Center(
+      body: Consumer(
+        builder: (context, ref, child) {
+          final AsyncValue<List<TableModel>> tableState =
+              ref.watch(tablesFutureProvider);
+
+          return tableState.when(
+            loading: () => const Center(
               child: LoadingCustomer(),
-            )
-          : tables.isEmpty
-              ? const Center(
+            ),
+            error: (error, stackTrace) => const Center(
+              child: Text("Error al cargar las mesas"),
+            ),
+            data: (tables) {
+              if (tables.isEmpty) {
+                return const Center(
                   child: Text("No hay mesas creadas"),
-                )
-              : buildListItems(tables),
+                );
+              } else {
+                return buildListItems(tables);
+              }
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -65,29 +67,23 @@ class _TableScreenState extends ConsumerState<TableScreen> {
       itemCount: tables.length,
       itemBuilder: (context, index) {
         final item = tables[index];
-        String available;
+        String availableText;
+        Color statusColor;
+
         if (item.available!) {
-          available = "Disponible";
+          availableText = "Disponible";
+          statusColor = Colors.green;
         } else {
-          available = "Ocupada";
+          availableText = "Ocupada";
+          statusColor = Colors.red;
         }
-        return ListTile(
-          title: Text("Mesa ${item.number}"),
-          subtitle: Text(available),
+
+        return TableCardWidget(
+          table: item,
+          availableText: availableText,
+          statusColor: statusColor,
         );
       },
-    );
-  }
-
-  Widget buildItem(String id) {
-    return Column(
-      children: [
-        QrImageView(
-          data: id,
-          size: 100,
-          backgroundColor: Colors.white,
-        ),
-      ],
     );
   }
 }

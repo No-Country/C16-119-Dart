@@ -1,13 +1,24 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/features/product/domain/datasources/product_datasource.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 
 class ProductDatasourceImpl implements ProductDatasource {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   @override
-  Future<ProductModel> createProduct(ProductModel product) async {
+  Future<ProductModel> createProduct(
+      ProductModel product, List<File> image) async {
+    List<String> listImage = [];
+    for (var i = 0; i < 2; i++) {
+      String imageUrl = await uploadImageToStorage(image[0]);
+      listImage.add(imageUrl);
+    }
+    product = product.copyWith(image: listImage);
     final result = await _firebase.collection(Constants.tableProducts).add(
           product.toJson(),
         );
@@ -48,16 +59,21 @@ class ProductDatasourceImpl implements ProductDatasource {
       var result = await _firebase.collection(Constants.tableProducts).get();
       return result.docs.map((doc) {
         final productId = doc.id;
+        print("Lista de productos ${productId}");
+
         return ProductModel.fromJson(
             doc.data() as Map<String, dynamic>, productId);
       }).toList();
     } catch (e) {
+      print("Lista de productos ${e}");
+
       return [];
     }
   }
 
   @override
-  Future<ProductModel?> updateProduct(ProductModel product, String id) async {
+  Future<ProductModel?> updateProduct(
+      ProductModel product, String id, List<File> image) async {
     try {
       await _firebase
           .collection(Constants.tableProducts)
@@ -66,6 +82,21 @@ class ProductDatasourceImpl implements ProductDatasource {
       return product.copyWith(id: id);
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<String> uploadImageToStorage(File image) async {
+    try {
+      String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      TaskSnapshot snapshot = await _firebaseStorage
+          .ref()
+          .child('product_images/$imageName')
+          .putFile(image);
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error al subir la imagen: $e');
+      throw Exception('Error al subir la imagen: $e');
     }
   }
 }

@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/config/functions/message_customer.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
+import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/widget/ingredients_customer.dart';
@@ -32,51 +34,61 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final ValidationTextForm _validate = ValidationTextForm();
 
+  // variables del formulario
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _categoryController = TextEditingController();
   bool _active = false;
   bool _prepared = false;
-  final int _selectedIndex = -1;
   final List<String> _listIngredients = [];
+  final List<CategoryModel> _listCategory = [];
+  String _imageUrl = "";
 
-  final List<String> _category = [
-    'seleccione',
-    'Categoría 1',
-    'Categoría 2',
-    'Categoría 3'
-  ];
+  // variables locales
   bool isLoading = false;
+  File? _image;
 
   @override
   void initState() {
+    handleListcategories();
     handleInitText();
   }
 
-  handleInitText() async {
+  handleListcategories() async {
+    final categoryNotifier = ref.read(categoriesProvider.notifier);
+    final result = await categoryNotifier.state.getCateroryAll();
+    setState(() {
+      _listCategory.clear();
+      _listCategory.addAll(result);
+    });
+  }
+
+  handleInitText() {
     final productProvider = ref.read(productsProvider.notifier);
-    final product =
-        await productProvider.state.getProductById(widget.productId);
+    final product = productProvider.state.getProductById(widget.productId);
+
     if (product != null) {
       _nameController.text = product.name;
       _descriptionController.text = product.description;
       _priceController.text = product.price.toString();
-      _categoryController.text = product.categoryId;
+      _categoryController.text = product.category;
       _active = product.available;
       _prepared = product.prepared;
-      if (_category.contains(product.categoryId)) {
-        _categoryController.text = product.categoryId;
-        print("Si esta en la lista de categorias");
-      } else {
-        print("No hay lista de productos");
-      }
+      _imageUrl = product.image![0];
+      _categoryController.text = product.category;
       _listIngredients.clear();
       if (product.ingredients != null && product.ingredients!.isNotEmpty) {
         _listIngredients.addAll(product.ingredients!);
       }
     }
     setState(() {});
+  }
+
+  void handleImageChanged(File imageFile) {
+    setState(() {
+      _image = imageFile;
+    });
   }
 
   @override
@@ -114,7 +126,10 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           buildSpace(),
-          ImageCustom(),
+          ImageCustom(
+            initialImageUrl: _imageUrl,
+            onImageChanged: handleImageChanged,
+          ),
           buildSpace(),
           TextFieldCustom(
             text: "Nombre",
@@ -136,7 +151,7 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
           const SizedBox(height: 2),
           if (_categoryController.text.isNotEmpty)
             SelectCustomer(
-              options: _category,
+              options: _listCategory,
               initialValue: _categoryController.text,
               onChanged: (value) {
                 _categoryController.text = value!;
@@ -214,17 +229,17 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
           description: description,
           price: price,
           available: available,
-          categoryId: category,
+          category: category,
           prepared: needsPreparation,
-          image: '',
           ingredients: ingredients,
         );
 
+        List<File> imagen = [_image!];
+
         // Llamar al método addProduct del ProductsNotifier
-        await ref.read(productsProvider).updateProduct(
-              product,
-              widget.productId,
-            );
+        await ref
+            .read(productsProvider)
+            .updateProduct(product, widget.productId, imagen);
 
         // Mostrar un mensaje de éxito
         MessageSnackBar.show(context, "Producto Actualizado con exito");

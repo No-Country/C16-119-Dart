@@ -5,6 +5,7 @@ import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/product/presentation/widget/image_gallery.dart';
 
 class ProductDetailsScreen extends ConsumerWidget {
   final String productIds;
@@ -15,7 +16,7 @@ class ProductDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final productState = ref.watch(productsProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(productIds)),
+      appBar: AppBar(title: const Text("Detalles")),
       body: productState.state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
@@ -58,7 +59,7 @@ class _ProductView extends ConsumerWidget {
         SizedBox(
           height: 350,
           width: 600,
-          child: _ImageGallery(images: []),
+          child: ImageGallery(imageUrl: product.image!.first),
         ),
         _ProductDetail(product: product),
       ],
@@ -73,6 +74,7 @@ class _ProductDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+   
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.6,
@@ -142,7 +144,7 @@ class _ProductDetail extends ConsumerWidget {
                                   width: 10,
                                 ),
                                 Text(
-                                  product.categoryId,
+                                  product.category,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -242,42 +244,6 @@ class _ProductDetail extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _ImageGallery extends StatelessWidget {
-  final List<String> images;
-  const _ImageGallery({required this.images});
-
-  @override
-  Widget build(BuildContext context) {
-    if (images.isEmpty) {
-      return ClipRRect(
-        child: Image.asset('assets/images/splash.png', fit: BoxFit.cover),
-      );
-    }
-
-    return PageView(
-      scrollDirection: Axis.horizontal,
-      controller: PageController(viewportFraction: 1),
-      children: images.map((image) {
-        late ImageProvider imageProvider;
-        if (image.startsWith('http')) {
-          imageProvider = NetworkImage(image);
-        } else {
-          // imageProvider = FileImage(File(image));
-        }
-        // return Text("siy img");
-
-        return ClipRRect(
-          child: FadeInImage(
-            fit: BoxFit.cover,
-            image: imageProvider,
-            placeholder: const AssetImage('assets/images/splash.png'),
-          ),
-        );
-      }).toList(),
     );
   }
 }

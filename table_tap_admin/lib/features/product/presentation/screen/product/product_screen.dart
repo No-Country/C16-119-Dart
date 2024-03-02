@@ -16,38 +16,42 @@ class ProductScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductScreenState extends ConsumerState<ProductScreen> {
-  final List<ProductModel> listProduct = [];
-  bool loading = true;
   @override
   void initState() {
     super.initState();
-    handleShowProducts();
-  }
-
-  handleShowProducts() async {
-    final productsNotifier = ref.read(productsProvider.notifier);
-    final products = await productsNotifier.state.getProductAll();
-    setState(() {
-      listProduct.clear();
-      listProduct.addAll(products);
-      loading = false;
-    });
+    // Cargar los productos al iniciar la pantalla
+    ref.read(productsProvider.notifier).state.list();
   }
 
   @override
   Widget build(BuildContext context) {
-    handleShowProducts();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mis Productos'),
       ),
-      body: SafeArea(
-        child: loading
-            ? const LoadingCustomer()
-            : listProduct.isEmpty
-                ? const Text("No se encontraron productos")
-                : buildList(listProduct),
+      body: Consumer(
+        builder: (context, ref, child) {
+          final AsyncValue<List<ProductModel>> productState =
+              ref.watch(productsFutureProvider);
+
+          return productState.when(
+            loading: () => const Center(
+              child: LoadingCustomer(),
+            ),
+            error: (error, stackTrace) => const Center(
+              child: Text("Error al cargar los productos"),
+            ),
+            data: (products) {
+              if (products.isEmpty) {
+                return const Center(
+                  child: Text("No se encontraron productos"),
+                );
+              } else {
+                return buildList(products);
+              }
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: colorSecondary,
@@ -62,21 +66,21 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
     );
   }
 
-  Widget buildList(List<ProductModel?> productList) {
+  Widget buildList(List<ProductModel> productList) {
     return ListView.builder(
       itemCount: productList.length,
       itemBuilder: (context, index) {
         final product = productList[index];
         return Dismissible(
-          key: Key(product!.id!),
+          key: Key(product.id!),
           confirmDismiss: (direction) async {
-            // Muestra un diálogo de confirmación antes de eliminar
             return await showDialog(
               context: context,
               builder: (context) => AlertDialog(
                 title: const Text("Confirmar eliminación"),
                 content: const Text(
-                    "¿Estás seguro de que quieres eliminar este producto?"),
+                  "¿Estás seguro de que quieres eliminar este producto?",
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -91,9 +95,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             );
           },
           onDismissed: (_) async {
-            final productsNotifier = ref.read(
-              productsProvider.notifier,
-            );
+            final productsNotifier = ref.read(productsProvider.notifier);
             await productsNotifier.state.deleteProduct(product.id!);
           },
           background: Container(
@@ -105,7 +107,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "Eliminan product",
+                    "Eliminan producto",
                     style: TextStyle(color: colorPrincipal, fontSize: 25),
                   ),
                 ),
@@ -118,7 +120,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             ),
           ),
           child: ListTile(
-            title: ProductCard(product: product!),
+            title: ProductCard(product: product),
           ),
         );
       },

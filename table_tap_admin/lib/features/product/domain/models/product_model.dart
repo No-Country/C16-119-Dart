@@ -1,12 +1,13 @@
 class ProductModel {
   final String? id;
   final String name;
-  final String? image;
+  final List<String>? image;
   final String description;
-  final String categoryId;
+  final String category;
   final double price;
   final bool prepared;
   final bool available;
+  final int? time;
   final List<String>? ingredients;
 
   const ProductModel({
@@ -14,25 +15,28 @@ class ProductModel {
     required this.name,
     this.image,
     required this.description,
-    required this.categoryId,
+    required this.category,
     required this.price,
     required this.prepared,
     required this.available,
     this.ingredients,
+    this.time,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json, String id) =>
       ProductModel(
         id: id,
         name: json['name'],
-        image: json['image'],
         description: json['description'],
-        categoryId: json['categoryId'],
+        category: json['category'],
         price: json['price'].toDouble(),
         prepared: json['prepared'] as bool,
         available: json['available'] as bool,
         ingredients: json['ingredients'] != null
             ? List<String>.from(json['ingredients'])
+            : null,
+        image: json['image'] != null
+            ? List<String>.from(json['image'])
             : null,
       );
 
@@ -40,7 +44,7 @@ class ProductModel {
         'name': name,
         'image': image,
         'description': description,
-        'categoryId': categoryId,
+        'category': category,
         'price': price,
         'prepared': prepared,
         'available': available,
@@ -50,24 +54,26 @@ class ProductModel {
   ProductModel copyWith({
     String? id,
     String? name,
-    String? image,
+    List<String>? image,
     String? description,
-    String? categoryId,
+    String? category,
     double? price,
     bool? prepared,
     bool? available,
     List<String>? ingredients,
+    int? time,
   }) {
     return ProductModel(
       id: id ?? this.id,
       name: name ?? this.name,
       image: image ?? this.image,
       description: description ?? this.description,
-      categoryId: categoryId ?? this.categoryId,
+      category: category ?? this.category,
       price: price ?? this.price,
       prepared: prepared ?? this.prepared,
       available: available ?? this.available,
       ingredients: ingredients ?? this.ingredients,
+      time: time ?? this.time,
     );
   }
 }
