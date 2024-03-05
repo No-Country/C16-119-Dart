@@ -8,7 +8,7 @@ import 'package:table_tap_admin/features/product/domain/models/product_model.dar
 
 class ProductDatasourceImpl implements ProductDatasource {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseStorage  _firebaseStorage = FirebaseStorage.instance;
 
   @override
   Future<ProductModel> createProduct(
