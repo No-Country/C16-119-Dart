@@ -24,3 +24,11 @@ final filteredOrdersProvider =
     return orders.where((order) => order.status == state).toList();
   });
 });
+
+final orderById =
+    StreamProvider.family<OrderModel, String>((ref, id) {
+  final repository = ref.watch(orderRepositoryProvider);
+  return repository.getOrders().map((orders) {
+    return orders.firstWhere((order) => order.id == id);
+  });
+});

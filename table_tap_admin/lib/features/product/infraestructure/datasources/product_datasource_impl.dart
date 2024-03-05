@@ -74,6 +74,16 @@ class ProductDatasourceImpl implements ProductDatasource {
   @override
   Future<ProductModel?> updateProduct(
       ProductModel product, String id, List<File> image) async {
+    List<String> listImage = [];
+
+    if (image.isNotEmpty) {
+      for (var i = 0; i < 2; i++) {
+        String imageUrl = await uploadImageToStorage(image[0]);
+        listImage.add(imageUrl);
+      }
+      product = product.copyWith(image: listImage);
+    }
+
     try {
       await _firebase
           .collection(Constants.tableProducts)

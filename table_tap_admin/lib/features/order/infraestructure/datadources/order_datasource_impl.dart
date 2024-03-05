@@ -39,28 +39,6 @@ class OrderDatasourceImpl implements OrderDatasource {
       return null;
     }
   }
-/*
-  @override
-  Stream<List<OrderModel>> getOrders() {
-    return _database.child(Constants.tableOrders).onValue.map((event) {
-      final ordersMap = event.snapshot.value;
-      if (ordersMap == null || ordersMap is! Map) {
-        return [];
-      } else {
-        final Map<String, dynamic> convertedMap = {};
-
-        (ordersMap as Map<Object?, Object?>).forEach((key, value) {
-          if (key != null) {
-            convertedMap[key.toString()] = value;
-          }
-        });
-        return convertedMap.entries.map((entry) {
-          Map<String, dynamic> orderData = {entry.key: entry.value};
-          return OrderModel.fromJson(orderData);
-        }).toList();
-      }
-    });
-  }*/
 
   @override
   Stream<List<OrderModel>> getOrders() {

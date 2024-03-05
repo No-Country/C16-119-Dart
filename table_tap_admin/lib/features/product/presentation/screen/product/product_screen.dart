@@ -6,6 +6,9 @@ import 'package:table_tap_admin/config/theme.dart';
 import 'package:table_tap_admin/features/product/domain/models/product_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/widget/product_card.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
+import 'package:table_tap_admin/features/shared/widgets/list_empyty_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 
 class ProductScreen extends ConsumerStatefulWidget {
@@ -17,11 +20,6 @@ class ProductScreen extends ConsumerStatefulWidget {
 
 class _ProductScreenState extends ConsumerState<ProductScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -29,10 +27,8 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final AsyncValue<List<ProductModel>> productState =
-              ref.watch(productsFutureProvider);
-
-          return productState.when(
+          final productsAsync = ref.watch(productsProvider);
+          return productsAsync.when(
             loading: () => const Center(
               child: LoadingCustomer(),
             ),
@@ -42,7 +38,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             data: (products) {
               if (products.isEmpty) {
                 return const Center(
-                  child: Text("No se encontraron productos"),
+                  child: ListEmptyCustomer(message: "Lista vacia"),
                 );
               } else {
                 return buildList(products);
@@ -93,8 +89,16 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             );
           },
           onDismissed: (_) async {
-            final productsNotifier = ref.read(productsProvider.notifier);
-            await productsNotifier.state.deleteProduct(product.id!);
+            try {
+              await ref
+                  .read(productsProvider.notifier)
+                  .deleteProduct(product.id!);
+              messageDialogSucces(
+                  context, "Producto eliminado con éxito", "Proceso exitoso");
+            } catch (error) {
+              messageDialogError(context, "No se pudo eliminar el producto",
+                  "Ocurrió un error");
+            }
           },
           background: Container(
             color: Colors.red,
@@ -105,7 +109,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "Eliminan producto",
+                    "Eliminando producto",
                     style: TextStyle(color: colorPrincipal, fontSize: 25),
                   ),
                 ),

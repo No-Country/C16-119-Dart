@@ -23,25 +23,43 @@ class OrderModel {
     final double _priceTotal = (json['priceTotal'] as num?)?.toDouble() ?? 0.0;
     final int _amountTotal = (json['amountTotal'] as num?)?.toInt() ?? 0;
     final int _timeTotal = (json['timeTotal'] as int?) ?? 0;
-    final String? _idOrder = json['idOrder'] as String?;
-    final String? _nameCustomer = json['nameCustomer'] as String? ?? '';
-    final String? _status = json['status'] as String? ?? '';
+    final String _nameCustomer = json['nameCustomer'] as String? ?? '';
+    final String _status = json['status'] as String? ?? '';
 
-    // Mapear la lista de platos
-    //final List<DishModel> dishes = (json['dishes'] as List<dynamic>?)
-    //        ?.map((dishJson) =>
-    //            DishModel.fromJson(dishJson as Map<Object?, Object?>))
-    //        .toList() ??
-    //    [];
+    List<DishModel> dishesList = [];
+if (json['dishes'] is List) {
+  List<Object?> dishes = json['dishes'] as List<Object?>;
+  for (var dishObj in dishes) {
+    if (dishObj is Map<Object?, Object?>) {
+      Map<Object?, Object?> dishMap = dishObj as Map<Object?, Object?>;
+      String idDish = dishMap['idDish'].toString();
+      String name = dishMap['name'].toString();
+      double price = double.parse(dishMap['price'].toString());
+      int amount = int.parse(dishMap['amount'].toString());
+      List<String> photos = List<String>.from((dishMap['photos'] as List<Object?>).map((photo) => photo.toString()));
+      List<String> ingredients = List<String>.from((dishMap['ingredients'] as List<Object?>).map((name) => name.toString()));
+
+      DishModel dishModel = DishModel(
+        name: name,
+        price: price,
+        amount: amount,
+        photos: photos,
+        ingredients: ingredients,
+      );
+      dishesList.add(dishModel);
+    }
+  }
+}
+
 
     return OrderModel(
       id: id,
-      nameCustomer: _nameCustomer!,
+      nameCustomer: _nameCustomer,
       priceTotal: _priceTotal,
       amountTotal: _amountTotal,
       timeTotal: _timeTotal,
       status: _status,
-      dishes: [],
+      dishes: dishesList,
     );
   }
 

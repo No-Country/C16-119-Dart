@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/auth/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/home/presentation/widget/profile_widget.dart';
@@ -10,7 +9,11 @@ import 'package:table_tap_admin/features/product/presentation/riverpod/provider.
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/resturant_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,6 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     {"title": "Ordenes", "icon": Icons.shopping_cart},
     {"title": "Mesas", "icon": Icons.table_chart},
     {"title": "Resturante", "icon": Icons.restaurant},
+    {"title": "Usuarios", "icon": Icons.people},
   ];
 
   Widget _buildContent() {
@@ -47,7 +51,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       case 3:
         return const TableScreen();
       case 4:
-        return RegisterResScreen();
+        return const RestaurantScreen();
+      case 5:
+        return const UserScreen();
       default:
         return Container();
     }
@@ -72,13 +78,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    initEntities();
   }
 
   void initEntities() async {
     final categoryPr = ref.read(categoriesProvider.notifier);
     final productsPr = ref.read(productsProvider.notifier);
-    await categoryPr.state.list();
-    await productsPr.state.list();
+    final usersPr = ref.read(usersProvider.notifier);
+    final tablesPr = ref.read(tablesProvider.notifier);
+    await categoryPr.list();
+    await productsPr.list();
+    await usersPr.state.list();
+    await tablesPr.list();
   }
 
   void init() async {
@@ -213,8 +224,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ],
                       ),
                       Expanded(
-                        child: _buildContent(),
-                      )
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            return _buildContent();
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

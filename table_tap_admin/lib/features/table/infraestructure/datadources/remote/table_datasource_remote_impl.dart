@@ -60,7 +60,7 @@ class TableDatasourceRemoteImpl implements TableDatasource {
     try {
       await _firebase.collection(Constants.tableTable).doc(id).update({
         'number': table.number,
-        'status': table.available,
+        'available': table.available,
       });
       return table.copyWith(id: id);
     } catch (e) {

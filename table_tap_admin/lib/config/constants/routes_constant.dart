@@ -6,6 +6,7 @@ class RoutesConstants {
   static const passwordVerifyCode = "/password_verify_code";
   static const passwordChange = "/password_change";
   static const home = "/home";
+  static const restaurant = "/restaurante";
   static const restaurant_register = "/restaurante/register";
   static const restaurant_details = "/restaurante/details/:id";
   static const products = "/products";
@@ -19,7 +20,12 @@ class RoutesConstants {
   static const tables = "/tables";
   static const tableAdd = "/table/add";
   static const tableDetail = "/table/details/:id";
+  static const tableEdit = "/table/edit/:id";
   static const orders = "/orders";
   static const orderDetail = "/order/detail/:id";
   static const orderEdit = "/order/edit/:id";
+  static const users = "/users";
+  static const userAdd = "/user/add";
+  static const userDetail = "/user/detail/:id";
+  static const userEdit = "/user/edit/:id";
 }

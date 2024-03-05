@@ -51,7 +51,13 @@ class TableCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(Icons.edit, color: colorSecondary),
+              IconButton(
+                icon: const Icon(Icons.edit, color: colorSecondary),
+                onPressed: () {
+                  context
+                      .push(RoutesConstants.tableEdit, extra: {"id": table.id});
+                },
+              ),
             ],
           ),
         ),

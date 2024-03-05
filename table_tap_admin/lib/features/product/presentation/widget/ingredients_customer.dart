@@ -38,12 +38,14 @@ class _IngredientsCustomerState extends State<IngredientsCustomer> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {
-                setState(() {
+                if (_textFormFieldController.text.isNotEmpty) {
                   listIngredients.add(_textFormFieldController.text);
                   _textFormFieldController.clear();
                   widget.onIngredientsChanged?.call(
-                      listIngredients); // Llama a la función de devolución de llamada
-                });
+                    listIngredients,
+                  );
+                }
+                setState(() {});
               },
             ),
           ),
@@ -57,6 +59,9 @@ class _IngredientsCustomerState extends State<IngredientsCustomer> {
   }
 
   Widget buildListItems() {
+    if (listIngredients.isEmpty) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,8 +79,7 @@ class _IngredientsCustomerState extends State<IngredientsCustomer> {
               onDismissed: (direction) {
                 setState(() {
                   listIngredients.removeAt(index);
-                  widget.onIngredientsChanged?.call(
-                      listIngredients); // Llama a la función de devolución de llamada
+                  widget.onIngredientsChanged?.call(listIngredients);
                 });
               },
               child: ListTile(

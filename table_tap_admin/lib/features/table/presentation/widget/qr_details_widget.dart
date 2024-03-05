@@ -14,6 +14,7 @@ class QrDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 50),
         QrImageView(
           data: table.id!,
           backgroundColor: Colors.white,

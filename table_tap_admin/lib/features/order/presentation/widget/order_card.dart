@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/order/domain/models/order_model.dart';
 import 'package:table_tap_admin/features/order/presentation/widget/popup_menu_widget.dart';
 
@@ -28,7 +30,7 @@ class OrderCard extends StatelessWidget {
           ]),
       trailing: PopupMenuWidet(orderId: order.id!),
       onTap: () {
-        print(' Tapped on Order /${order.id} moneda');
+        context.push(RoutesConstants.orderDetail, extra: {"id": order.id});
       },
     );
   }

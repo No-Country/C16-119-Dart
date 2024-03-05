@@ -9,6 +9,8 @@ import 'package:table_tap_admin/features/product/domain/models/product_model.dar
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/widget/ingredients_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
 import 'package:table_tap_admin/features/shared/widgets/image_custom.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/select_customer.dart';
@@ -55,17 +57,20 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
 
   handleListcategories() async {
     final categoryNotifier = ref.read(categoriesProvider.notifier);
-    final result = await categoryNotifier.state.getCateroryAll();
+    final result = categoryNotifier.getCategoryByStatus();
     setState(() {
       _listCategory.clear();
-      _listCategory.addAll(result);
+      _listCategory.addAll(result!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title:const Text("Crear producto"),
+
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -106,6 +111,7 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             text: "Nombre",
             hintText: "Ingrese nombre",
             controller: _nameController,
+            requerido: true,
             keyboardType: TextInputType.text,
             validator: (value) => _validate.validateName(value),
           ),
@@ -118,7 +124,7 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             multiLine: 3,
           ),
           buildSpace(),
-          const Text("Categoria"),
+          const Text("Categoria *"),
           const SizedBox(height: 2),
           SelectCustomer(
             options: _listCategory,
@@ -134,6 +140,7 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             controller: _priceController,
             keyboardType: TextInputType.number,
             validator: (value) => _validate.validateLastName(value),
+            requerido: true,
           ),
           buildSpace(),
           TextFieldCustom(
@@ -141,7 +148,6 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             hintText: "Ingrese tiempo",
             controller: _timeController,
             keyboardType: TextInputType.number,
-            validator: (value) => _validate.validateName(value),
           ),
           buildSpace(),
           SwichCustomer(
@@ -209,6 +215,12 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
       String category = _categoryController.text;
       bool available = _active;
       bool needsPreparation = _prepared;
+      int? time;
+
+      if (_timeController.text.isNotEmpty) {
+        time = int.tryParse(_timeController.text);
+      }
+
       List<String> ingredients = _listIngredients;
       List<File> image = [_image!];
 
@@ -222,22 +234,22 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
           category: category,
           prepared: needsPreparation,
           ingredients: ingredients,
+          time: time,
         );
 
-        print("Categoria es ${_categoryController.text}");
         // Llamar al método addProduct del ProductsNotifier
-
-        await ref.read(productsProvider).addProduct(product, image);
+        final productAsync = ref.read(productsProvider.notifier);
+        await productAsync.addProduct(product, image);
         handleCleanText();
-        setState(() {
-          isLoading = false;
-        });
         // Mostrar un mensaje de éxito
-        MessageSnackBar.show(context, "Producto creado exitosamente");
+        messageDialogSucces(context, "Producto creado exitosamente", "");
       } catch (error) {
         // Mostrar un mensaje de error
-        MessageSnackBar.show(
-            context, "Error al crear el producto: ${error.toString()}");
+        messageDialogError(
+          context,
+          "Error ${error.toString()}",
+          "Error al crear le producto",
+        );
       } finally {
         setState(() {
           isLoading = false;

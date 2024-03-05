@@ -88,7 +88,7 @@ class AuthRemoteDataSource {
 
       if (responseAuth == null) {
         return UserEntity(
-          success: true,
+          success: false,
           errorMessage: "No se puede iniciar sesion\ncredenciales invalidas.",
         );
       }

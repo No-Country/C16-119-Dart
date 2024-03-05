@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
 import 'package:table_tap_admin/features/auth/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
 
 import '../../../../../config/constants/constans.dart';
@@ -29,8 +31,6 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    emailController.text = "prueba@gmail.com";
-    passwordController.text = "Prueba123#";
   }
 
   @override
@@ -120,23 +120,31 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
         isLoading = true;
       });
 
-      final response = await authRepository.login(
-        emailController.text,
-        passwordController.text,
-      );
-
-      if (response.success!) {
-        sharedPrefRepository.setAccessToken(
-          response.account!.token!,
-          response.user!.id!,
+      try {
+        final response = await authRepository.login(
+          emailController.text,
+          passwordController.text,
         );
-        user.update(response);
-        _navigationHome();
-      } else {
-        _buidMessage(response.errorMessage);
+
+        if (response.success!) {
+          sharedPrefRepository.setAccessToken(
+            response.account!.token!,
+            response.user!.id!,
+          );
+          user.update(response);
+          _navigationHome();
+        } else {
+          messageDialogError(context, response.errorMessage!, "");
+        }
+      } catch (e) {
+        messageDialogError(context, "Error ${e.toString()}", "");
+      } finally {
+        isLoading = false;
       }
+
+      setState(() {});
     } else {
-      _buidMessage("Error en el servidor");
+      messageDialogError(context, "Error en el servidor", "");
     }
   }
 
@@ -150,13 +158,5 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _navigationHome() {
     context.go(RoutesConstants.home);
-  }
-
-  void _buidMessage(message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
   }
 }

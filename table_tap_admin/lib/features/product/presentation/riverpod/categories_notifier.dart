@@ -23,43 +23,36 @@ class CategoriesNotifier
   }
 
   Future<void> addCategory(CategoryModel category) async {
-    list();
-    state = const AsyncLoading();
     try {
       await categoryRepository.createCategory(category);
-      final updatedCategory = await categoryRepository.getCategories();
-      state = AsyncData(updatedCategory);
+      await list();
     } catch (error) {
       print(error);
     }
   }
 
-  Future<void> updateCategory(CategoryModel Category, String id) async {
-    list();
+  Future<void> updateCategory(CategoryModel category, String id) async {
     state = const AsyncLoading();
     try {
-      await categoryRepository.updateCategory(Category, id);
-      final updatedCategory = await categoryRepository.getCategories();
-      state = AsyncData(updatedCategory);
+      await categoryRepository.updateCategory(category, id);
+      await list();
     } catch (error) {
       print(error);
     }
   }
 
-  Future<void> deleteCategory(String CategoryId) async {
+  Future<void> deleteCategory(String categoryId) async {
     list();
     state = const AsyncLoading();
     try {
-      await categoryRepository.deleteCategory(CategoryId);
-      final updatedCategory = await categoryRepository.getCategories();
-      state = AsyncData(updatedCategory);
+      await categoryRepository.deleteCategory(categoryId);
+      list();
     } catch (error) {
       print(error);
     }
   }
 
   CategoryModel? getCategotyById(String categoryId) {
-    list();
     if (state is AsyncData<List<CategoryModel>>) {
       final categories = (state as AsyncData<List<CategoryModel>>).value;
       return categories.firstWhere(
@@ -70,11 +63,12 @@ class CategoriesNotifier
     }
   }
 
-  Future<List<CategoryModel>> getCateroryAll() async {
-    list();
+  List<CategoryModel>? getCategoryByStatus() {
     if (state is AsyncData<List<CategoryModel>>) {
       final categories = (state as AsyncData<List<CategoryModel>>).value;
-      return categories;
+      final filterCategories =
+          categories.where((category) => category.status == true).toList();
+      return filterCategories;
     } else {
       return [];
     }

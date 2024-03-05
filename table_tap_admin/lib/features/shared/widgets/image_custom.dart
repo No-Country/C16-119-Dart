@@ -23,14 +23,14 @@ class _ImageCustomState extends State<ImageCustom> {
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.initialImageUrl);
-    _imageUrl = widget.initialImageUrl;
+    _imageUrl = widget.initialImageUrl; // Inicializar _imageUrl con initialImageUrl
   }
 
   Future<void> _pickImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      _imageUrl = image.path;
-      widget.onImageChanged?.call(File(_imageUrl!));
+    final imageFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      _imageUrl = imageFile.path;
+      widget.onImageChanged?.call(File(_imageUrl!)); // Llamar onImageChanged con el archivo seleccionado
       setState(() {});
     }
   }
@@ -40,7 +40,7 @@ class _ImageCustomState extends State<ImageCustom> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text("Imagen del producto"),
+        const Text("Imagen del producto *"),
         const SizedBox(height: 10),
         GestureDetector(
           onTap: _pickImage,
@@ -59,9 +59,9 @@ class _ImageCustomState extends State<ImageCustom> {
                     Icons.add_a_photo_outlined,
                     size: 48.0,
                   )
-                : widget.initialImageUrl == null
+                : _imageUrl!.startsWith("http") || _imageUrl!.startsWith("https")
                     ? CachedNetworkImage(
-                        imageUrl: widget.initialImageUrl!,
+                        imageUrl: _imageUrl!,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
