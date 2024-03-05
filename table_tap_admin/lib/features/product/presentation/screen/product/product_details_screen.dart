@@ -14,16 +14,21 @@ class ProductDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final productState = ref.watch(productsProvider);
+    final productAsync = ref.watch(productsProvider);
+    final product =
+        ref.read(productsProvider.notifier).getProductById(productIds);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Detalles")),
-      body: productState.state.when(
+      body: productAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
-        data: (products) {
-          final product =
-              products.firstWhere((product) => product.id == productIds);
-          return _ProductView(product: product);
+        data: (_) {
+          if (product != null) {
+            return _ProductView(product: product);
+          } else {
+            return const Center(child: Text('Producto no encontrado'));
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -74,7 +79,6 @@ class _ProductDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.6,

@@ -27,8 +27,7 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     state = const AsyncLoading();
     try {
       await productRepository.createProduct(product, image);
-      final updatedProducts = await productRepository.getProducts();
-      state = AsyncData(updatedProducts);
+      await list();
     } catch (error) {
       print(error);
     }
@@ -39,8 +38,7 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     state = const AsyncLoading();
     try {
       await productRepository.updateProduct(product, id, image);
-      final updatedProducts = await productRepository.getProducts();
-      state = AsyncData(updatedProducts);
+      await list();
     } catch (error) {
       print(error);
     }
@@ -50,8 +48,7 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     state = const AsyncLoading();
     try {
       await productRepository.deleteProduct(productId);
-      final updatedProducts = await productRepository.getProducts();
-      state = AsyncData(updatedProducts);
+      list();
     } catch (error) {
       print(error);
     }
@@ -68,10 +65,12 @@ class ProductsNotifier extends StateNotifier<AsyncValue<List<ProductModel>>> {
     }
   }
 
-  Future<List<ProductModel>> getProductAll() async {
+  List<ProductModel>? getProductByStatus() {
     if (state is AsyncData<List<ProductModel>>) {
       final products = (state as AsyncData<List<ProductModel>>).value;
-      return products;
+      final filterProducts =
+          products.where((product) => product.available == true).toList();
+      return filterProducts;
     } else {
       return [];
     }

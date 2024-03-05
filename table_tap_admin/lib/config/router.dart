@@ -18,9 +18,15 @@ import 'package:table_tap_admin/features/product/presentation/screen/product/pro
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/details_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/resturant_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_details_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/screen/table_edit_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_register_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_add_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_detail_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_edit_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_screen.dart';
 
 final goRouterProvider = GoRouter(
   initialLocation: RoutesConstants.splash,
@@ -52,6 +58,10 @@ final goRouterProvider = GoRouter(
     GoRoute(
       path: RoutesConstants.home,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: RoutesConstants.restaurant,
+      builder: (context, state) => const RestaurantScreen(),
     ),
     GoRoute(
       path: RoutesConstants.restaurant_register,
@@ -106,6 +116,14 @@ final goRouterProvider = GoRouter(
       },
     ),
     GoRoute(
+      path: RoutesConstants.tableEdit,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String tableId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return TableEditScreen(tableId: tableId);
+      },
+    ),
+    GoRoute(
       path: RoutesConstants.tableAdd,
       builder: (context, state) => const TableRegisterScreen(),
     ),
@@ -127,6 +145,34 @@ final goRouterProvider = GoRouter(
         final Object? extra = state.extra;
         final String orderId = (extra as Map<String, dynamic>)['id'] ?? '';
         return OrderEditScreen(order: orderId);
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.users,
+      builder: (context, state) {
+        return const UserScreen();
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.userAdd,
+      builder: (context, state) {
+        return const UserAddScreen();
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.userDetail,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String userId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return UserDetailScreen(userId: userId);
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.userEdit,
+      builder: (context, state) {
+        final Object? extra = state.extra;
+        final String userId = (extra as Map<String, dynamic>)['id'] ?? '';
+        return UserEditScreen(userId:userId);
       },
     ),
   ],

@@ -8,7 +8,12 @@ import 'package:table_tap_admin/features/order/presentation/screen/order/order_s
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/resturant_screen.dart';
+import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
+import 'package:table_tap_admin/features/users/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/users/presentation/screen/user/user_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -32,6 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     {"title": "Ordenes", "icon": Icons.shopping_cart},
     {"title": "Mesas", "icon": Icons.table_chart},
     {"title": "Resturante", "icon": Icons.restaurant},
+    {"title": "Usuarios", "icon": Icons.people},
   ];
 
   Widget _buildContent() {
@@ -41,11 +47,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       case 1:
         return const CategoryScreen();
       case 2:
-        return OrderScreen();
+        return const OrderScreen();
       case 3:
         return const TableScreen();
       case 4:
-        return const TableScreen();
+        return const RestaurantScreen();
+      case 5:
+        return const UserScreen();
       default:
         return Container();
     }
@@ -69,15 +77,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    init();
     super.initState();
+    initEntities();
   }
 
   void initEntities() async {
     final categoryPr = ref.read(categoriesProvider.notifier);
     final productsPr = ref.read(productsProvider.notifier);
-    await categoryPr.state.list();
-    await productsPr.state.list();
+    final usersPr = ref.read(usersProvider.notifier);
+    final tablesPr = ref.read(tablesProvider.notifier);
+    await categoryPr.list();
+    await productsPr.list();
+    await usersPr.state.list();
+    await tablesPr.list();
   }
 
   void init() async {
@@ -153,7 +165,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     onTap: () {
                       closeDrawer();
-                      setState(() {});
+                      setState(() {
+                        handleCloseSession(context);
+                      });
                     },
                   ),
                 ),
@@ -210,8 +224,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ],
                       ),
                       Expanded(
-                        child: _buildContent(),
-                      )
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            return _buildContent();
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -226,11 +244,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-/*
+
   handleCloseSession(BuildContext context) async {
     final usuario = ref.read(usuarioProvider.notifier);
     try {
-      setState(() {});
+      await usuario.logout();
+      context.go(RoutesConstants.login);
     } catch (error) {
       _buidMessage(error.toString());
     } finally {
@@ -244,5 +263,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         content: Text(message),
       ),
     );
-  }*/
+  }
 }

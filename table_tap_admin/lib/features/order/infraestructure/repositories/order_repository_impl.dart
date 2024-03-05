@@ -2,10 +2,10 @@ import 'package:table_tap_admin/features/order/domain/datasources/order_datasour
 import 'package:table_tap_admin/features/order/domain/models/order_model.dart';
 import 'package:table_tap_admin/features/order/domain/repositories/order_repository.dart';
 
-class OderRepositoryImpl implements OrderRepository {
+class OrderRepositoryImpl implements OrderRepository {
   final OrderDatasource orderDatasource;
 
-  OderRepositoryImpl({required this.orderDatasource});
+  OrderRepositoryImpl({required this.orderDatasource});
 
   @override
   Future<OrderModel> createOrder(OrderModel order) {
@@ -23,12 +23,17 @@ class OderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<List<OrderModel>> getOrders() {
+  Stream<List<OrderModel>> getOrders() {
     return orderDatasource.getOrders();
   }
 
   @override
   Future<OrderModel?> updateOrder(OrderModel order, String id) {
     return orderDatasource.updateOrder(order, id);
+  }
+
+  @override
+  Future<bool> updateOrderStatus(String newStatus, String id) {
+    return orderDatasource.updateOrderStatus(newStatus, id);
   }
 }

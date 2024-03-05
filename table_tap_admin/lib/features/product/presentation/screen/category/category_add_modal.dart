@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
 import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
 import 'package:table_tap_admin/features/shared/widgets/swich_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
 
@@ -72,24 +75,34 @@ class CategoryAddModalState extends ConsumerState<CategoryAddModal> {
       setState(() {
         _isLoading = true;
       });
-
       try {
+        //obtengo los datos de a enviar
         String name = _nameController.text;
         bool available = _active;
-
-        final category = CategoryModel(name: name, status: available);
-        await ref.read(categoriesProvider).addCategory(category);
+        // uso los estados para llamar a los metodos
+        // crea instancia de la categoria
+        final categoriesAsync = ref.watch(categoriesProvider.notifier);
+        // crea modelo category
+        final modelCategory = CategoryModel(name: name, status: available);
+        // se envia a la base de datos
+        await categoriesAsync.addCategory(modelCategory);
+        // limpio los campos
         _nameController.clear();
         _active = false;
-        print(
-            "\n\nCategoria :$name\nEsatdo ${available ? 'Activo' : 'Desactivo'}");
+        setState(() {});
+        cerrarModal(context);
+        messageDialogSucces(context, "Se creo con exito", "Categoria $name");
       } catch (e) {
-        print("${e.toString()}");
+        messageDialogError(context, "Error ${e.toString()}", "");
       } finally {
         setState(() {
-          _isLoading = false; // Cambiado a false
+          _isLoading = false;
         });
       }
     }
+  }
+
+  void cerrarModal(BuildContext context) {
+    context.pop();
   }
 }

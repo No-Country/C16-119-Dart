@@ -20,40 +20,39 @@ class TableNotifier extends StateNotifier<AsyncValue<List<TableModel>>> {
     }
   }
 
-  Future<void> addProduct(TableModel table) async {
+  Future<TableModel?> addTable(TableModel table) async {
     state = const AsyncLoading();
     try {
-      await tableRepository.createTable(table);
-      final updatedtables = await tableRepository.getTables();
-      state = AsyncData(updatedtables);
+      final responseTable = await tableRepository.createTable(table);
+      await list();
+      return responseTable;
     } catch (error) {
       print(error);
     }
+    return null;
   }
 
-  Future<void> updateProduct(TableModel table, String id) async {
+  Future<void> updateTable(TableModel table, String id) async {
     state = const AsyncLoading();
     try {
       await tableRepository.updateTable(table, id);
-      final updatedTables = await tableRepository.getTables();
-      state = AsyncData(updatedTables);
+      await list();
     } catch (error) {
       print(error);
     }
   }
 
-  Future<void> deleteProduct(String tableId) async {
+  Future<void> deleteTable(String tableId) async {
     state = const AsyncLoading();
     try {
       await tableRepository.deleteTable(tableId);
-      final updateTables = await tableRepository.getTables();
-      state = AsyncData(updateTables);
+      await list();
     } catch (error) {
       print(error);
     }
   }
 
-  TableModel? getProductById(String tableId) {
+  TableModel? getTableById(String tableId) {
     if (state is AsyncData<List<TableModel>>) {
       final tables = (state as AsyncData<List<TableModel>>).value;
       return tables.firstWhere(
@@ -61,15 +60,6 @@ class TableNotifier extends StateNotifier<AsyncValue<List<TableModel>>> {
       );
     } else {
       return null;
-    }
-  }
-
-  Future<List<TableModel>> getProductAll() async {
-    if (state is AsyncData<List<TableModel>>) {
-      final tables = (state as AsyncData<List<TableModel>>).value;
-      return tables;
-    } else {
-      return [];
     }
   }
 }

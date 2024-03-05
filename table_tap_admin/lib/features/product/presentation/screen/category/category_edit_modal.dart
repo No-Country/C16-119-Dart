@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
 import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/shared/widgets/button_customer.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/swich_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
@@ -17,8 +20,7 @@ class CategoryEditModal extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      CategoryEditModalState();
+  CategoryEditModalState createState() => CategoryEditModalState();
 }
 
 class CategoryEditModalState extends ConsumerState<CategoryEditModal> {
@@ -35,19 +37,23 @@ class CategoryEditModalState extends ConsumerState<CategoryEditModal> {
   }
 
   handleInitText() async {
-    final categoryProvider = ref.read(categoriesProvider.notifier);
-    final category =
-        await categoryProvider.state.getCategotyById(widget.categoryId);
-    if (category != null) {
-      _nameController.text = category.name;
-      _active = category.status!;
+    try {
+      final categoryAsync = await ref
+          .read(categoriesProvider.notifier)
+          .getCategotyById(widget.categoryId);
+      if (categoryAsync != null) {
+        _nameController.text = categoryAsync.name;
+        _active = categoryAsync.status!;
+        setState(() {});
+      }
+    } catch (e) {
+      print("Error ${e.toString()}");
     }
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding( 
+    return Padding(
       padding: const EdgeInsets.all(40.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -66,7 +72,7 @@ class CategoryEditModalState extends ConsumerState<CategoryEditModal> {
                   controller: _nameController,
                   hintText: "Ingrese una categoria",
                   text: "Nombre",
-                  keyboardType: TextInputType.text, 
+                  keyboardType: TextInputType.text,
                   validator: (value) => _validate.validateIsTextEmpity(value),
                 ),
                 const SizedBox(height: 20),
@@ -97,20 +103,30 @@ class CategoryEditModalState extends ConsumerState<CategoryEditModal> {
       });
 
       try {
+        //obtengo los datos de a enviar
         String name = _nameController.text;
         bool available = _active;
-
-        final category = CategoryModel(name: name, status: available);
-        await ref.read(categoriesProvider).updateCategory(
-              category,
-              widget.categoryId,
-            );
+        // crea instancia de la categoria
+        final categoriesAsync = ref.watch(categoriesProvider.notifier);
+        // crea modelo category
+        final modelCategory = CategoryModel(name: name, status: available);
+        // se envia a la base de datos
+        await categoriesAsync.updateCategory(modelCategory, widget.categoryId);
+        // limpio los campos
+        cerrarModal(context);
+        messageDialogSucces(
+            context, "Se actualizo con exito", "Categoria $name");
       } catch (e) {
+        messageDialogError(context, "Error ${e.toString()}", "");
       } finally {
         setState(() {
           _isLoading = false;
         });
       }
     }
+  }
+
+  void cerrarModal(BuildContext context) {
+    context.pop();
   }
 }

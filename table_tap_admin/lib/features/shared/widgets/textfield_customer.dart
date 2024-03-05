@@ -9,6 +9,7 @@ class TextFieldCustom extends StatefulWidget {
   final FormFieldValidator? validator;
   final TextEditingController? controller;
   final String? text;
+  final bool? requerido;
 
   const TextFieldCustom({
     super.key,
@@ -19,6 +20,7 @@ class TextFieldCustom extends StatefulWidget {
     this.controller,
     this.icono,
     this.text,
+    this.requerido,
   });
 
   @override
@@ -36,7 +38,7 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
             ? Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
                 child: Text(
-                  widget.text!,
+                  "${widget.text!} ${widget.requerido != null ? '*' : ''}",
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               )

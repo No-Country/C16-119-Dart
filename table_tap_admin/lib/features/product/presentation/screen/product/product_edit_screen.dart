@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/functions/message_customer.dart';
 import 'package:table_tap_admin/config/validate/validation_text.dart';
 import 'package:table_tap_admin/features/product/domain/models/category_model.dart';
@@ -39,6 +38,9 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _categoryController = TextEditingController();
+  final _timeController = TextEditingController();
+  String _imageInit = "";
+
   bool _active = false;
   bool _prepared = false;
   final List<String> _listIngredients = [];
@@ -51,22 +53,22 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
 
   @override
   void initState() {
+    super.initState();
     handleListcategories();
     handleInitText();
   }
 
   handleListcategories() async {
-    final categoryNotifier = ref.read(categoriesProvider.notifier);
-    final result = await categoryNotifier.state.getCateroryAll();
+    final categoryNotifier = ref.read(categoriesProvider);
     setState(() {
       _listCategory.clear();
-      _listCategory.addAll(result);
+      _listCategory.addAll(categoryNotifier.value!);
     });
   }
 
   handleInitText() {
     final productProvider = ref.read(productsProvider.notifier);
-    final product = productProvider.state.getProductById(widget.productId);
+    final product = productProvider.getProductById(widget.productId);
 
     if (product != null) {
       _nameController.text = product.name;
@@ -76,6 +78,7 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
       _active = product.available;
       _prepared = product.prepared;
       _imageUrl = product.image![0];
+      _imageInit = product.image![0];
       _categoryController.text = product.category;
       _listIngredients.clear();
       if (product.ingredients != null && product.ingredients!.isNotEmpty) {
@@ -94,7 +97,9 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Editar producto"),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -134,6 +139,7 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
           TextFieldCustom(
             text: "Nombre",
             hintText: "Ingrese nombre",
+            requerido: true,
             controller: _nameController,
             keyboardType: TextInputType.text,
             validator: (value) => _validate.validateName(value),
@@ -147,7 +153,7 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
             multiLine: 3,
           ),
           buildSpace(),
-          const Text("Categoria"),
+          const Text("Categoria *"),
           const SizedBox(height: 2),
           if (_categoryController.text.isNotEmpty)
             SelectCustomer(
@@ -163,7 +169,16 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
             hintText: "Ingrese precio",
             controller: _priceController,
             keyboardType: TextInputType.number,
+            requerido: true,
             validator: (value) => _validate.validateLastName(value),
+          ),
+          buildSpace(),
+          TextFieldCustom(
+            text: "Tiempo",
+            hintText: "Ingrese tiempo",
+            controller: _timeController,
+            keyboardType: TextInputType.number,
+            requerido: true,
           ),
           buildSpace(),
           SwichCustomer(
@@ -210,8 +225,9 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
       setState(() {
         isLoading = true;
       });
-      // Espera para simular una solicitud al servidor
-      await Future.delayed(const Duration(seconds: 5));
+      ;
+
+      print("url imagen ${_image}");
 
       // Obtener los valores del formulario
       String name = _nameController.text;
@@ -221,6 +237,11 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
       bool available = _active;
       bool needsPreparation = _prepared;
       List<String> ingredients = _listIngredients;
+      int? time;
+
+      if (_timeController.text.isNotEmpty) {
+        time = int.tryParse(_timeController.text);
+      }
 
       try {
         // Crear una instancia de ProductModel
@@ -232,18 +253,20 @@ class ProductEditScreenState extends ConsumerState<ProductEditScreen> {
           category: category,
           prepared: needsPreparation,
           ingredients: ingredients,
+          image: [_imageInit],
+          time: time ?? 0,
         );
-
-        List<File> imagen = [_image!];
+        List<File> imagen = [];
+        if (_image != null) {
+          imagen = [_image!];
+        }
 
         // Llamar al método addProduct del ProductsNotifier
-        await ref
-            .read(productsProvider)
-            .updateProduct(product, widget.productId, imagen);
-
+        final productAsync = ref.read(productsProvider.notifier);
+        await productAsync.updateProduct(product, widget.productId, imagen);
         // Mostrar un mensaje de éxito
         MessageSnackBar.show(context, "Producto Actualizado con exito");
-        context.pop();
+        //  context.pop();
       } catch (error) {
         // Mostrar un mensaje de error
         MessageSnackBar.show(

@@ -10,17 +10,11 @@ final tableRepositoryProvider = Provider<TableRepository>(
 );
 
 // Proveedor para las entidades
-final productsProvider = StateProvider<TableNotifier>(
+final tablesProvider =
+    StateNotifierProvider<TableNotifier, AsyncValue<List<TableModel>>>(
   (ref) => TableNotifier(
     tableRepository: ref.read(
       tableRepositoryProvider,
     ),
   ),
 );
-
-final tableProvider = StateProvider<List<TableModel>>((ref) => []);
-
-final tablesFutureProvider = FutureProvider<List<TableModel>>((ref) async {
-  final tableRepository = ref.read(tableRepositoryProvider);
-  return await tableRepository.getTables();
-});

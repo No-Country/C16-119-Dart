@@ -26,7 +26,7 @@ class ProductsScreenState extends ConsumerState<ProductsScreen> {
     super.initState();
     ref.read(orderSelectedProvider.notifier).getOrderLocal();
     ref.read(tableSelectedProvider.notifier).getTableLocal();
-    ref.read(productsListProvider.notifier).loadNextPage();
+    // ref.read(productsListProvider.notifier).loadNextPage();
   }
 
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -190,7 +190,7 @@ class _ProductsList extends ConsumerWidget {
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
-                  childAspectRatio: 6 / 9,
+                  childAspectRatio: 3 / 4,
                   crossAxisSpacing: 15,
                   mainAxisSpacing: 20),
               itemCount: productsList.length,

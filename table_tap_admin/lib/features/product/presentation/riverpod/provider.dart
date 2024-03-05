@@ -25,7 +25,8 @@ final productRepositoryProvider = Provider<ProductRepository>(
 );
 
 // Proveedor para las entidades
-final productsProvider = StateProvider<ProductsNotifier>(
+final productsProvider =
+    StateNotifierProvider<ProductsNotifier, AsyncValue<List<ProductModel>>>(
   (ref) => ProductsNotifier(
     productRepository: ref.read(
       productRepositoryProvider,
@@ -33,22 +34,9 @@ final productsProvider = StateProvider<ProductsNotifier>(
   ),
 );
 
-final categoriesProvider = StateProvider(
+final categoriesProvider =
+    StateNotifierProvider<CategoriesNotifier, AsyncValue<List<CategoryModel>>>(
   (ref) => CategoriesNotifier(
-    categoryRepository: ref.read(
-      categoryRepositoryProvider,
-    ),
+    categoryRepository: ref.read(categoryRepositoryProvider),
   ),
 );
-
-// futures
-final productsFutureProvider = FutureProvider<List<ProductModel>>((ref) async {
-  final tableRepository = ref.read(productRepositoryProvider);
-  return await tableRepository.getProducts();
-});
-
-
-final categoiesFutureProvider = FutureProvider<List<CategoryModel>>((ref) async {
-  final categoryRepository = ref.read(categoryRepositoryProvider);
-  return await categoryRepository.getCategories();
-});

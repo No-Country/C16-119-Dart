@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_tap_admin/config/config.dart';
 import 'package:table_tap_admin/config/constants/routes_constant.dart';
+import 'package:table_tap_admin/features/product/presentation/widget/delete_dismissible.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogError.dart';
+import 'package:table_tap_admin/features/shared/widgets/dialogs/message_dialogSucces.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
 import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
@@ -32,15 +35,13 @@ class _TableScreenState extends ConsumerState<TableScreen> {
           color: colorPrincipal,
         ),
         onPressed: () {
-          context.push(RoutesConstants.productAdd);
+          context.push(RoutesConstants.tableAdd);
         },
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final AsyncValue<List<TableModel>> tableState =
-              ref.watch(tablesFutureProvider);
-
-          return tableState.when(
+          final tablesAsync = ref.watch(tablesProvider);
+          return tablesAsync.when(
             loading: () => const Center(
               child: LoadingCustomer(),
             ),
@@ -75,15 +76,32 @@ class _TableScreenState extends ConsumerState<TableScreen> {
           statusColor = Colors.green;
         } else {
           availableText = "Ocupada";
-          statusColor = Colors.red;
+          statusColor = Colors.blue;
         }
 
-        return TableCardWidget(
-          table: item,
-          availableText: availableText,
-          statusColor: statusColor,
+        return DeleteDismissible(
+          item: item,
+          onDismissed: (table) {
+            _handleDelete(context, table.id);
+          },
+          child: TableCardWidget(
+            table: item,
+            availableText: availableText,
+            statusColor: statusColor,
+          ),
         );
       },
     );
+  }
+
+  void _handleDelete(BuildContext context, String id) async {
+    try {
+      await ref.read(tablesProvider.notifier).deleteTable(id);
+      messageDialogSucces(
+          context, "La mesa se eliminó con éxito", "Proceso exitoso");
+    } catch (error) {
+      messageDialogError(
+          context, "No se pudo eliminar la mesa", "Ocurrió un error");
+    }
   }
 }

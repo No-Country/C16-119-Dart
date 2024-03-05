@@ -4,6 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 import 'package:table_tap_admin/features/table/domain/models/table_model.dart';
 import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
+import 'package:table_tap_admin/features/table/presentation/widget/qr_details_widget.dart';
 import 'package:table_tap_admin/features/table/presentation/widget/table_card_widget.dart';
 
 class TableDetailsScreen extends ConsumerStatefulWidget {
@@ -29,63 +30,13 @@ class _TableDetailsScreenState extends ConsumerState<TableDetailsScreen> {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final AsyncValue<List<TableModel>> tableState =
-              ref.watch(tablesFutureProvider);
+          final tableAsyn = ref.watch(tablesProvider.notifier);
+          final table = tableAsyn.getTableById(widget.tableId);
 
-          return tableState.when(
-            loading: () => const Center(
-              child: LoadingCustomer(),
-            ),
-            error: (error, stackTrace) => const Center(
-              child: Text("Error al cargar las mesas"),
-            ),
-            data: (tables) {
-              final table = tables.firstWhere(
-                (table) => table.id == widget.tableId,
-              );
-
-              if (table == null) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: QrImageView(
-                        data: table.id!,
-                        version: QrVersions.auto,
-                        size: 350,
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    const Text(
-                      'Detalles de la mesa',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text('ID: ${table.id}'),
-                    Text('Mesa No. ${table.number}'),
-                    Text(
-                      'Estado: ${table.available! ? "Disponible" : "Ocupada"}',
-                      style: TextStyle(
-                        color: table.available! ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+          return table == null
+              ? const Center(child: LoadingCustomer())
+              :QrDetailsWidget(table: table) ;
+        }
       ),
     );
   }

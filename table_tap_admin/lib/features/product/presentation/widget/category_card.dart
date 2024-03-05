@@ -46,7 +46,6 @@ class CategoryCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(Icons.edit, color: colorSecondary),
             ],
           ),
         ),
@@ -70,4 +69,5 @@ class CategoryCard extends StatelessWidget {
       },
     );
   }
+
 }

@@ -2,8 +2,8 @@ import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 
 class Product {
   String idProduct;
-  int? time;
-  int? likes;
+  int time;
+  int likes;
   String category;
   String description;
   bool available;
