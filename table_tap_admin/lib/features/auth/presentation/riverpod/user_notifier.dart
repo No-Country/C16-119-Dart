@@ -27,7 +27,6 @@ class UserNotifier extends StateNotifier<UserEntity?> {
   logout() async {
     await _authRepository.logout();
     await _sharedPrefRepo.removeAccessToken();
-    state = null;
   }
 
   update(UserEntity entity) {

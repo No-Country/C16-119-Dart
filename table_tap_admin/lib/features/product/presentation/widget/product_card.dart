@@ -17,6 +17,11 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    String productName = product.name.length > 20
+        ? product.name.substring(0, 20) +
+            "..." // Truncar el nombre si es demasiado largo
+        : product.name;
+
     return Card(
       elevation: 2,
       shadowColor: colorPrincipal,
@@ -45,9 +50,9 @@ class ProductCard extends ConsumerWidget {
                           imageUrl: product.image!.first,
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
-                             const CircularProgressIndicator(),
+                              const CircularProgressIndicator(),
                           errorWidget: (context, url, error) =>
-                           const Icon(Icons.error),
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -56,20 +61,20 @@ class ProductCard extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
-                          style: Theme.of(context).textTheme.headline6,
+                          productName,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           "${product.price}",
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           product.category!,
-                          style: Theme.of(context).textTheme.subtitle2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 8),
                         TextStatusCustomer(status: product.available),

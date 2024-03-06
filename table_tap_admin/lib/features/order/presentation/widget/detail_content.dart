@@ -9,7 +9,6 @@ class DetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("LISta de orden ${dishes.first.ingredients.first}");
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -56,6 +55,7 @@ class DetailContent extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        if(dish.ingredients.isNotEmpty)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: dish.ingredients.map((ingredient) {

@@ -35,11 +35,6 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    nameController.text = "prueba";
-    lastNameController.text = "prueba 1";
-    emailController.text = "prueba@gmail.com";
-    passwordController.text = "Prueba123#";
-    passwordConfController.text = "Prueba123#";
   }
 
   @override

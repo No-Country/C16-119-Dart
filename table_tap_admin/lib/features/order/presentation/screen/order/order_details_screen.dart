@@ -18,13 +18,18 @@ class OrderDetailScreen extends StatelessWidget {
       body: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
           final order = ref.watch(orderById(orderId));
-          final dishes = order.value!.dishes;
+          if (order == null || order.isLoading) {
+            return const CircularProgressIndicator(); // Mostrar un indicador de carga si el pedido es nulo o está cargando.
+          }
+          final dishes = order.value?.dishes ?? [];
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DetailHeader(order: order.value!),
-               DetailContent(dishes: dishes),
+                order.isLoading
+                    ? Container()
+                    : DetailHeader(order: order.value!),
+                dishes.isNotEmpty ? DetailContent(dishes: dishes) : Container(),
               ],
             ),
           );

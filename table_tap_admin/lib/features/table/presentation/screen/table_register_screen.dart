@@ -102,6 +102,7 @@ class _TableRegisterScreenState extends ConsumerState<TableRegisterScreen> {
           available: _statusTable,
         );
         await tableProvider.addTable(requestTable);
+        handleCleantext();
       }
       messageDialogSucces(context, "mesa creada con exito", "");
     } catch (e) {
