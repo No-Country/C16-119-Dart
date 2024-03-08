@@ -143,8 +143,6 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
       }
 
       setState(() {});
-    } else {
-      messageDialogError(context, "Error en el servidor", "");
     }
   }
 

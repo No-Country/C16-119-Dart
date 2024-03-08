@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:log_print/log_print.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_tap_customer/config/config.dart';
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';

@@ -82,9 +82,10 @@ class ProductAddScreenState extends ConsumerState<ProductAddScreen> {
             child: Column(
               children: [
                 buildForm(),
-                const SizedBox(height: 40),
-                ButtonCustomer(text: "Continue", press: handleSubmit),
+                const SizedBox(height: 20),
                 isLoading ? const LoadingCustomer() : Container(),
+                const SizedBox(height: 20),
+                ButtonCustomer(text: "Continue", press: handleSubmit),
               ],
             ),
           ),

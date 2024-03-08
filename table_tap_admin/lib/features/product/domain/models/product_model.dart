@@ -8,6 +8,7 @@ class ProductModel {
   final bool prepared;
   final bool available;
   final int? time;
+  final int? likes;
   final List<String>? ingredients;
 
   const ProductModel({
@@ -20,6 +21,7 @@ class ProductModel {
     required this.prepared,
     required this.available,
     this.ingredients,
+    this.likes,
     this.time,
   });
 
@@ -30,14 +32,15 @@ class ProductModel {
         description: json['description'],
         category: json['category'],
         price: json['price'].toDouble(),
-        prepared: json['prepared'] as bool,
-        available: json['available'] as bool,
+        prepared: json['prepared'] != null ? json['prepared'] as bool : false,
+        available:
+            json['available'] != null ? json['available'] as bool : false,
+        time: json['time'] != null ? json['time'] as int : 0,
+        likes: json['likes'] != null ? json['likes'] as int : 0,
         ingredients: json['ingredients'] != null
             ? List<String>.from(json['ingredients'])
             : null,
-        image: json['image'] != null
-            ? List<String>.from(json['image'])
-            : null,
+        image: json['image'] != null ? List<String>.from(json['image']) : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +52,8 @@ class ProductModel {
         'prepared': prepared,
         'available': available,
         'ingredients': ingredients,
+        'time': time,
+        'likes': likes,
       };
 
   ProductModel copyWith({
@@ -62,6 +67,7 @@ class ProductModel {
     bool? available,
     List<String>? ingredients,
     int? time,
+    int? likes,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -74,6 +80,7 @@ class ProductModel {
       available: available ?? this.available,
       ingredients: ingredients ?? this.ingredients,
       time: time ?? this.time,
+      likes: likes ?? this.time,
     );
   }
 }

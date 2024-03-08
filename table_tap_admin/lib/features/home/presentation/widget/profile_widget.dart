@@ -17,8 +17,8 @@ class ProfileWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("${user.name} ${user.lastName}",
-                  style: Theme.of(context).textTheme.bodySmall),
+              Text(user.name, style: Theme.of(context).textTheme.bodySmall),
+              Text(user.lastName, style: Theme.of(context).textTheme.bodySmall),
               Text("${user.rol}", style: Theme.of(context).textTheme.bodySmall),
             ],
           ),

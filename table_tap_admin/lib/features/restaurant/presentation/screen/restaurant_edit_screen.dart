@@ -11,14 +11,15 @@ import 'package:table_tap_admin/features/shared/widgets/header_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/loading_customer.dart';
 import 'package:table_tap_admin/features/shared/widgets/textfield_customer.dart';
 
-class RegisterResScreen extends ConsumerStatefulWidget {
-  RegisterResScreen({super.key});
+class RestaurantEditScreen extends ConsumerStatefulWidget {
+  RestaurantEditScreen({super.key});
 
   @override
-  ConsumerState<RegisterResScreen> createState() => _RegisterResScreenState();
+  ConsumerState<RestaurantEditScreen> createState() =>
+      _RestaurantEditScreenState();
 }
 
-class _RegisterResScreenState extends ConsumerState<RegisterResScreen> {
+class _RestaurantEditScreenState extends ConsumerState<RestaurantEditScreen> {
   final _formKey = GlobalKey<FormState>();
   final ValidationTextForm validate = ValidationTextForm();
   final TextEditingController nameController = TextEditingController();
@@ -30,15 +31,29 @@ class _RegisterResScreenState extends ConsumerState<RegisterResScreen> {
   final TextEditingController hourCloseController = TextEditingController();
 
   bool isLoading = false;
-  final List<String> customers = ['Seleccione', 'Active', 'Desactive'];
+  String restaurantId = "";
 
-  void onChanged(String? value) {
-    print('Cliente seleccionado: $value');
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    handleInitText();
+  }
+
+  void handleInitText() async {
+    final restauranAsync = ref.read(restaurantProvider);
+    final restaurant = restauranAsync.value!.first;
+    nameController.text = restaurant.name!;
+    addresController.text = restaurant.address!;
+    cellPhoneController.text = restaurant.cellphone!;
+    rutController.text = restaurant.rut!;
+    restaurantId = restaurant.id!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Editar restaurante")),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 80.0),
@@ -50,7 +65,7 @@ class _RegisterResScreenState extends ConsumerState<RegisterResScreen> {
                   description: 'Formulario de informacion del restaurante.',
                 ),
                 buildForm(),
-                 const SizedBox(height: 20),
+                const SizedBox(height: 20),
                 isLoading ? const LoadingCustomer() : Container(),
                 const SizedBox(height: 20),
                 ButtonCustomer(
@@ -132,16 +147,18 @@ class _RegisterResScreenState extends ConsumerState<RegisterResScreen> {
         );
 
         final restaurantAsyc = ref.read(restaurantProvider.notifier);
-        await restaurantAsyc.addRestaurant(restaurant);
-        messageDialogSucces(context, "Se creo con exito el restaurante", "");
+        await restaurantAsyc.updateRestaurant(restaurant, restaurantId);
+        messageDialogSucces(
+          context,
+          "Se Actualizo con exito el restaurante",
+          "",
+        );
       }
-  
     } catch (e) {
-      messageDialogError(context, "Error al crear restaurante", "");
+      messageDialogError(context, "Error al actualizar restaurante", "");
     } finally {
       setState(() {
-           isLoading=false;
-
+        isLoading = false;
       });
     }
   }

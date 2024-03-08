@@ -45,4 +45,5 @@ class Constants {
   static const String tableTable = "tables";
   static const String tableCategory = "categories";
   static const String tableOrders = "orders";
+  static const String tableRestaurant = "restaurant";
 }
