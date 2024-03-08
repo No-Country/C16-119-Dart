@@ -14,6 +14,6 @@ class ProductMapper {
         name: json["name"],
         photos: List<String>.from(json["image"].map((photo) => photo)),
         price: double.parse(json["price"].toString()),
-        ingredients: List.from(json["ingredients"].map((ingr) => ingr)),
+        ingredients: List?.from(json["ingredients"]?.map((ingr) => ingr)),
       ));
 }
