@@ -43,14 +43,14 @@ class UserCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nombre: ${user.name} ${user.lastName}',
+                            '${user.name} ${user.lastName}',
                           ),
                           Text(
-                            "Correo: ${user.direction!.isEmpty ? "No tiene" : user.celPhone}",
+                            "${user.celPhone?.isEmpty ?? "No registra cel"}",
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Rol ${user.rol}',
+                            '${user.rol!.isEmpty ? "Empleado" : user.rol}',
                           ),
                         ],
                       )

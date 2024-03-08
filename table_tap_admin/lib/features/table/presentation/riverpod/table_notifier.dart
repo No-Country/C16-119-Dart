@@ -56,7 +56,7 @@ class TableNotifier extends StateNotifier<AsyncValue<List<TableModel>>> {
     if (state is AsyncData<List<TableModel>>) {
       final tables = (state as AsyncData<List<TableModel>>).value;
       return tables.firstWhere(
-        (table) => table.id == tableId,
+        (table) =>  table.id == tableId,
       );
     } else {
       return null;

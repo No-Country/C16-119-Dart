@@ -9,6 +9,7 @@ class RoutesConstants {
   static const restaurant = "/restaurante";
   static const restaurant_register = "/restaurante/register";
   static const restaurant_details = "/restaurante/details/:id";
+  static const restaurant_edit = "/restaurante/edit/:id";
   static const products = "/products";
   static const productAdd = "/products/add";
   static const productDetail = "/product/detail/:id";

@@ -8,12 +8,14 @@ class OrderModel {
   final int? amountTotal;
   final List<DishModel> dishes;
   final String? status;
+  final String tableId;
 
   OrderModel({
     this.id,
     required this.nameCustomer,
     required this.priceTotal,
     required this.timeTotal,
+    required this.tableId,
     this.status,
     required this.amountTotal,
     required this.dishes,
@@ -24,33 +26,35 @@ class OrderModel {
     final int _amountTotal = (json['amountTotal'] as num?)?.toInt() ?? 0;
     final int _timeTotal = (json['timeTotal'] as int?) ?? 0;
     final String _nameCustomer = json['nameCustomer'] as String? ?? '';
+    final String _tableId = json['idTable'] as String? ?? '';
     final String _status = json['status'] as String? ?? '';
 
     List<DishModel> dishesList = [];
-if (json['dishes'] is List) {
-  List<Object?> dishes = json['dishes'] as List<Object?>;
-  for (var dishObj in dishes) {
-    if (dishObj is Map<Object?, Object?>) {
-      Map<Object?, Object?> dishMap = dishObj as Map<Object?, Object?>;
-      String idDish = dishMap['idDish'].toString();
-      String name = dishMap['name'].toString();
-      double price = double.parse(dishMap['price'].toString());
-      int amount = int.parse(dishMap['amount'].toString());
-      List<String> photos = List<String>.from((dishMap['photos'] as List<Object?>).map((photo) => photo.toString()));
-      List<String> ingredients = List<String>.from((dishMap['ingredients'] as List<Object?>).map((name) => name.toString()));
+    if (json['dishes'] is List) {
+      List<Object?> dishes = json['dishes'] as List<Object?>;
+      for (var dishObj in dishes) {
+        if (dishObj is Map<Object?, Object?>) {
+          Map<Object?, Object?> dishMap = dishObj as Map<Object?, Object?>;
+          String idDish = dishMap['idDish'].toString();
+          String name = dishMap['name'].toString();
+          double price = double.parse(dishMap['price'].toString());
+          int amount = int.parse(dishMap['amount'].toString());
+          List<String> photos = List<String>.from((dishMap['photos'] as List<Object?>).map((photo) => photo.toString()));
+         List<String> ingredients = List<String>.from(
+             (dishMap['ingredients'] as List<Object?>)
+                 .map((name) => name.toString()));
 
-      DishModel dishModel = DishModel(
-        name: name,
-        price: price,
-        amount: amount,
-        photos: photos,
-        ingredients: ingredients,
-      );
-      dishesList.add(dishModel);
+          DishModel dishModel = DishModel(
+            name: name,
+            price: price,
+            amount: amount,
+            photos: photos,
+            ingredients: ingredients,
+          );
+          dishesList.add(dishModel);
+        }
+      }
     }
-  }
-}
-
 
     return OrderModel(
       id: id,
@@ -58,6 +62,7 @@ if (json['dishes'] is List) {
       priceTotal: _priceTotal,
       amountTotal: _amountTotal,
       timeTotal: _timeTotal,
+      tableId: _tableId,
       status: _status,
       dishes: dishesList,
     );
@@ -71,6 +76,7 @@ if (json['dishes'] is List) {
       'amountTotal': amountTotal,
       'timeTotal': timeTotal,
       'status': status,
+      'idTable': tableId,
       'dishes': dishes.map((dish) => dish.toJson()).toList(),
     };
   }
@@ -82,6 +88,7 @@ if (json['dishes'] is List) {
     int? amounTotal,
     int? timeTotal,
     String? status,
+    String? tableId,
     List<DishModel>? dishes,
   }) {
     return OrderModel(
@@ -91,6 +98,7 @@ if (json['dishes'] is List) {
       amountTotal: amountTotal ?? this.amountTotal,
       timeTotal: timeTotal ?? this.timeTotal,
       status: status ?? this.status,
+      tableId: tableId ?? this.tableId,
       dishes: dishes ?? this.dishes,
     );
   }

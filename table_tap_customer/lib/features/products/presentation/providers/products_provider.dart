@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_tap_customer/features/dishes/domain/domain.dart';
 import 'package:table_tap_customer/features/products/domain/domain.dart';
 import 'package:table_tap_customer/features/products/infrastructure/infrastructure.dart';
 

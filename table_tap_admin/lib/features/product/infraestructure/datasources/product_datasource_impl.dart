@@ -8,7 +8,7 @@ import 'package:table_tap_admin/features/product/domain/models/product_model.dar
 
 class ProductDatasourceImpl implements ProductDatasource {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
-  final FirebaseStorage  _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   @override
   Future<ProductModel> createProduct(
@@ -59,13 +59,12 @@ class ProductDatasourceImpl implements ProductDatasource {
       var result = await _firebase.collection(Constants.tableProducts).get();
       return result.docs.map((doc) {
         final productId = doc.id;
-        print("Lista de productos ${productId}");
 
         return ProductModel.fromJson(
             doc.data() as Map<String, dynamic>, productId);
       }).toList();
     } catch (e) {
-      print("Lista de productos ${e}");
+      print("Lista de productos ${e.toString()}");
 
       return [];
     }

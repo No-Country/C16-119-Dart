@@ -17,6 +17,7 @@ import 'package:table_tap_admin/features/product/presentation/screen/product/pro
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_register_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/details_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/screen/restaurant_edit_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/resturant_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_details_screen.dart';
@@ -73,6 +74,12 @@ final goRouterProvider = GoRouter(
         final Object? extra = state.extra;
         final String id = (extra as Map<String, dynamic>)['id'] ?? '';
         return const DetailsRestScreen();
+      },
+    ),
+    GoRoute(
+      path: RoutesConstants.restaurant_edit,
+      builder: (context, state) {
+         return RestaurantEditScreen();
       },
     ),
     GoRoute(

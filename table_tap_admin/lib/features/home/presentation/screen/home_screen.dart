@@ -8,7 +8,7 @@ import 'package:table_tap_admin/features/order/presentation/screen/order/order_s
 import 'package:table_tap_admin/features/product/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/category/category_screen.dart';
 import 'package:table_tap_admin/features/product/presentation/screen/product/product_screen.dart';
-import 'package:table_tap_admin/features/restaurant/presentation/screen/register_res_screen.dart';
+import 'package:table_tap_admin/features/restaurant/presentation/riverpod/riverpod.dart';
 import 'package:table_tap_admin/features/restaurant/presentation/screen/resturant_screen.dart';
 import 'package:table_tap_admin/features/table/presentation/riverpod/provider.dart';
 import 'package:table_tap_admin/features/table/presentation/screen/table_screen.dart';
@@ -86,10 +86,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final productsPr = ref.read(productsProvider.notifier);
     final usersPr = ref.read(usersProvider.notifier);
     final tablesPr = ref.read(tablesProvider.notifier);
+    final restaurantPr = ref.read(restaurantProvider.notifier);
     await categoryPr.list();
     await productsPr.list();
     await usersPr.state.list();
     await tablesPr.list();
+    await restaurantPr.list();
   }
 
   void init() async {

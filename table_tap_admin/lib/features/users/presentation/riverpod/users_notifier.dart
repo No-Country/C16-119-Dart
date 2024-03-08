@@ -13,7 +13,6 @@ class UsersNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
     try {
       state = await AsyncValue.guard(() async {
         final users = await userRepository.getUsers();
-        print(users.map((e) => e.name));
         return users;
       });
     } catch (error) {

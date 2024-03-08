@@ -1,4 +1,5 @@
 import 'package:table_tap_customer/features/scanner/domain/domain.dart';
+import 'package:table_tap_customer/features/scanner/domain/repositories/tables_repository.dart';
 
 class TablesRepositoryImpl extends TablesRepository {
   final TablesDatasource datasource;
